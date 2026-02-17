@@ -22,8 +22,12 @@ export interface PoolData {
   totalDonated: bigint;
   totalClaimed: bigint;
   totalSmiles: bigint;
+  totalSmilers: bigint;
+  totalDonations: bigint;
   poolBalanceFormatted: string;
   rewardAmountFormatted: string;
+  totalDonatedFormatted: string;
+  totalClaimedFormatted: string;
 }
 
 export function usePoolBalance() {
@@ -39,49 +43,28 @@ export function usePoolBalance() {
     }
 
     try {
-      const [poolBalance, rewardAmount, scoreThreshold, totalDonated, totalClaimed, totalSmiles] =
-        await Promise.all([
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "getPoolBalance",
-          }),
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "getRewardAmount",
-          }),
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "getScoreThreshold",
-          }),
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "totalDonated",
-          }),
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "totalClaimed",
-          }),
-          publicClient.readContract({
-            address: smilePoolAddress,
-            abi: smilePoolAbi,
-            functionName: "totalSmiles",
-          }),
-        ]);
+      const stats = await publicClient.readContract({
+        address: smilePoolAddress,
+        abi: smilePoolAbi,
+        functionName: "getPoolStats",
+      });
+
+      const [poolBalance, rewardAmount, scoreThreshold, totalDonated, totalClaimed, totalSmiles, totalSmilers, totalDonations] =
+        stats as readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint];
 
       setData({
-        poolBalance: poolBalance as bigint,
-        rewardAmount: rewardAmount as bigint,
-        scoreThreshold: scoreThreshold as bigint,
-        totalDonated: totalDonated as bigint,
-        totalClaimed: totalClaimed as bigint,
-        totalSmiles: totalSmiles as bigint,
-        poolBalanceFormatted: formatUnits(poolBalance as bigint, 18),
-        rewardAmountFormatted: formatUnits(rewardAmount as bigint, 18),
+        poolBalance,
+        rewardAmount,
+        scoreThreshold,
+        totalDonated,
+        totalClaimed,
+        totalSmiles,
+        totalSmilers,
+        totalDonations,
+        poolBalanceFormatted: formatUnits(poolBalance, 18),
+        rewardAmountFormatted: formatUnits(rewardAmount, 18),
+        totalDonatedFormatted: formatUnits(totalDonated, 18),
+        totalClaimedFormatted: formatUnits(totalClaimed, 18),
       });
       setError(null);
     } catch (err) {

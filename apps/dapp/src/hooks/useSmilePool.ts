@@ -1,12 +1,19 @@
 import { useState, useCallback } from "react";
 import { useAddTxIntention, useFinalizeBTCTransaction, useSignIntention, useAddCompleteTxIntention } from "@midl/executor-react";
 import { useWaitForTransaction } from "@midl/react";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, createPublicClient, http } from "viem";
 import { smilePoolAbi, smilePoolAddress, erc20Abi } from "../lib/contracts";
-import { EXPLORER_URL } from "../config";
+import { EXPLORER_URL, MIDL_RPC, CHAIN_ID } from "../config";
 
 // Re-export for convenience
 export { useEVMAddress } from "@midl/executor-react";
+
+const midlChain = {
+  id: CHAIN_ID,
+  name: "MIDL Regtest",
+  nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
+  rpcUrls: { default: { http: [MIDL_RPC] } },
+} as const;
 
 interface TxResult {
   txId: string;
@@ -26,16 +33,33 @@ export function useSmilePool() {
   const [error, setError] = useState<string | null>(null);
 
   /**
+   * Fetch the current nonce for the given EVM address
+   */
+  const fetchNonce = useCallback(async (evmAddress: `0x${string}`): Promise<bigint> => {
+    const client = createPublicClient({ chain: midlChain, transport: http(MIDL_RPC) });
+    const nonce = await client.readContract({
+      address: smilePoolAddress,
+      abi: smilePoolAbi,
+      functionName: "getUserNonce",
+      args: [evmAddress],
+    });
+    return nonce as bigint;
+  }, []);
+
+  /**
    * Claim reward from the SmilePool
-   * Flow: addTxIntention (claimReward) → finalizeBTC → sign → send → wait
+   * Flow: fetch nonce → addTxIntention (claimReward) → finalizeBTC → sign → send → wait
    */
   const claimReward = useCallback(
-    async (smileScore: number): Promise<TxResult | null> => {
+    async (smileScore: number, message: string = "", evmAddress?: `0x${string}`): Promise<TxResult | null> => {
       setIsClaimPending(true);
       setError(null);
       setLastTx(null);
 
       try {
+        // Fetch on-chain nonce for anti-spam
+        const nonce = evmAddress ? await fetchNonce(evmAddress) : 0n;
+
         // 1. Create the claimReward transaction intention
         const claimIntention = await addTxIntentionAsync({
           intention: {
@@ -44,7 +68,7 @@ export function useSmilePool() {
               data: encodeFunctionData({
                 abi: smilePoolAbi,
                 functionName: "claimReward",
-                args: [BigInt(smileScore)],
+                args: [BigInt(smileScore), nonce, message],
               }),
             },
           },
@@ -68,16 +92,9 @@ export function useSmilePool() {
         }
 
         // 5. Send paired BTC+EVM transactions
-        // Access the sendBTCTransactions from the public client through viem
-        const { createPublicClient, http } = await import("viem");
         const client = createPublicClient({
-          chain: {
-            id: 777,
-            name: "MIDL Regtest",
-            nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
-            rpcUrls: { default: { http: ["https://evm-rpc.regtest.midl.xyz"] } },
-          },
-          transport: http("https://evm-rpc.regtest.midl.xyz"),
+          chain: midlChain,
+          transport: http(MIDL_RPC),
         });
 
         await (client as any).sendBTCTransactions({
@@ -103,12 +120,11 @@ export function useSmilePool() {
         setIsClaimPending(false);
       }
     },
-    [addTxIntentionAsync, addCompleteTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync]
+    [addTxIntentionAsync, addCompleteTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync, fetchNonce]
   );
 
   /**
    * Donate Rune tokens to the SmilePool
-   * Flow: approve → donate → finalizeBTC → sign → send → wait
    */
   const donate = useCallback(
     async (
@@ -121,7 +137,6 @@ export function useSmilePool() {
       setLastTx(null);
 
       try {
-        // 1. Approve SmilePool to spend the Rune ERC20 tokens
         const approveIntention = await addTxIntentionAsync({
           intention: {
             evmTransaction: {
@@ -136,7 +151,6 @@ export function useSmilePool() {
           reset: true,
         });
 
-        // 2. Create the donate transaction intention with rune deposit
         const donateIntention = await addTxIntentionAsync({
           intention: {
             evmTransaction: {
@@ -148,48 +162,25 @@ export function useSmilePool() {
               }),
             },
             deposit: {
-              runes: [
-                {
-                  id: runeId,
-                  amount,
-                  address: runeERC20Address,
-                },
-              ],
+              runes: [{ id: runeId, amount, address: runeERC20Address }],
             },
           },
         });
 
-        // 3. Finalize BTC transaction
         const { tx } = await finalizeBTCTransactionAsync({});
 
-        // 4. Sign each intention
         const signedTransactions = [];
         for (const intention of [approveIntention, donateIntention]) {
-          const signed = await signIntentionAsync({
-            intention,
-            txId: tx.id,
-          });
+          const signed = await signIntentionAsync({ intention, txId: tx.id });
           signedTransactions.push(signed);
         }
 
-        // 5. Send paired BTC+EVM transactions
-        const { createPublicClient, http } = await import("viem");
-        const client = createPublicClient({
-          chain: {
-            id: 777,
-            name: "MIDL Regtest",
-            nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
-            rpcUrls: { default: { http: ["https://evm-rpc.regtest.midl.xyz"] } },
-          },
-          transport: http("https://evm-rpc.regtest.midl.xyz"),
-        });
-
+        const client = createPublicClient({ chain: midlChain, transport: http(MIDL_RPC) });
         await (client as any).sendBTCTransactions({
           serializedTransactions: signedTransactions,
           btcTransaction: tx.hex,
         });
 
-        // 6. Wait for confirmation
         await waitForTransactionAsync({ txId: tx.id });
 
         const result: TxResult = {
@@ -213,6 +204,7 @@ export function useSmilePool() {
   return {
     claimReward,
     donate,
+    fetchNonce,
     isClaimPending,
     isDonatePending,
     lastTx,

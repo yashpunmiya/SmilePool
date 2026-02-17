@@ -19,11 +19,11 @@ export const queryClient = new QueryClient({
   },
 });
 
-// Contract config — update after deployment
+// Contract config
 export const SMILEPOOL_ADDRESS = (import.meta.env.VITE_CONTRACT_ADDRESS ||
-  "0x0000000000000000000000000000000000000000") as `0x${string}`;
+  "0xFAACE8aD6dFE99023142d16eCe92408D9a2C7E30") as `0x${string}`;
 
-export const MIDL_RPC = "https://evm-rpc.regtest.midl.xyz";
-export const CHAIN_ID = 777;
+export const MIDL_RPC = "https://rpc.staging.midl.xyz";
+export const CHAIN_ID = 15001;
 export const EXPLORER_URL = "https://blockscout.staging.midl.xyz";
 export const MEMPOOL_URL = "https://mempool.staging.midl.xyz";

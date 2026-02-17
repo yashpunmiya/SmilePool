@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
-import { useSmilePool } from "../hooks/useSmilePool";
+import { useSmilePool, useEVMAddress } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
 
 interface ClaimButtonProps {
   score: number | null;
+  message?: string;
 }
 
-export function ClaimButton({ score }: ClaimButtonProps) {
+export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
   const { claimReward, isClaimPending, lastTx, error } = useSmilePool();
+  const evmAddress = useEVMAddress();
   const { data: poolData, refetch } = usePoolBalance();
   const [claimed, setClaimed] = useState(false);
 
@@ -18,12 +20,11 @@ export function ClaimButton({ score }: ClaimButtonProps) {
   const handleClaim = async () => {
     if (!canClaim || score === null) return;
 
-    const result = await claimReward(score);
+    const result = await claimReward(score, message, evmAddress ?? undefined);
     if (result) {
       setClaimed(true);
       refetch();
 
-      // Confetti burst!
       confetti({
         particleCount: 150,
         spread: 80,
@@ -33,7 +34,6 @@ export function ClaimButton({ score }: ClaimButtonProps) {
     }
   };
 
-  // Reset claimed state when score changes
   useEffect(() => {
     setClaimed(false);
   }, [score]);
@@ -54,7 +54,7 @@ export function ClaimButton({ score }: ClaimButtonProps) {
         Claim your reward of{" "}
         <span className="text-btc-orange font-bold">
           {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."}{" "}
-          tokens
+          SMILES
         </span>{" "}
         from the pool.
       </p>
@@ -84,7 +84,6 @@ export function ClaimButton({ score }: ClaimButtonProps) {
         )}
       </button>
 
-      {/* TX confirmation */}
       {lastTx && (
         <motion.div
           initial={{ opacity: 0 }}

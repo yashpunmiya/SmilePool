@@ -1,17 +1,35 @@
-import "@nomicfoundation/hardhat-verify";
-import "hardhat-deploy";
 import "@midl/hardhat-deploy";
+import { MaestroSymphonyProvider, MempoolSpaceProvider } from "@midl/core";
+import "@nomicfoundation/hardhat-verify";
 import { midlRegtest } from "@midl/executor";
-import { type HardhatUserConfig, vars } from "hardhat/config";
+import { config as dotenvConfig } from "dotenv";
+import "hardhat-deploy";
+import type { HardhatUserConfig } from "hardhat/config";
+import { resolve } from "path";
+import "tsconfig-paths/register";
+
+dotenvConfig({ path: resolve(__dirname, "./.env") });
+
+const mnemonic =
+  process.env.MNEMONIC ||
+  "test test test test test test test test test test test junk";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.28",
-  defaultNetwork: "regtest",
+  networks: {
+    regtest: {
+      url: "https://rpc.staging.midl.xyz",
+      accounts: {
+        mnemonic,
+        path: "m/86'/1'/0'/0/0",
+      },
+      chainId: 15001,
+    },
+  },
   midl: {
+    path: "deployments",
     networks: {
       regtest: {
-        mnemonic: vars.get("MNEMONIC"),
-        path: "deployments",
+        mnemonic,
         confirmationsRequired: 1,
         btcConfirmationsRequired: 1,
         hardhatNetwork: "regtest",
@@ -20,14 +38,29 @@ const config: HardhatUserConfig = {
           id: "regtest",
           network: "regtest",
         },
+        providerFactory: () =>
+          new MempoolSpaceProvider({
+            regtest: "https://mempool.staging.midl.xyz",
+          }),
+        runesProviderFactory: () =>
+          new MaestroSymphonyProvider({
+            regtest: "https://runes.staging.midl.xyz",
+          }),
       },
     },
   },
-  networks: {
-    regtest: {
-      url: midlRegtest.rpcUrls.default.http[0],
-      chainId: midlRegtest.id,
-    },
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   etherscan: {
     apiKey: {
@@ -36,7 +69,7 @@ const config: HardhatUserConfig = {
     customChains: [
       {
         network: "regtest",
-        chainId: midlRegtest.id,
+        chainId: 15001,
         urls: {
           apiURL: "https://blockscout.staging.midl.xyz/api",
           browserURL: "https://blockscout.staging.midl.xyz",

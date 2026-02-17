@@ -1,0 +1,14 @@
+{
+  "name": "smilepool",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @smilepool/dapp dev",
+    "build": "pnpm --filter @smilepool/dapp build",
+    "deploy:contracts": "pnpm --filter @smilepool/contracts deploy"
+  },
+  "pnpm": {
+    "overrides": {
+      "viem": "npm:@midl/viem@^2.45.0"
+    }
+  }
+}

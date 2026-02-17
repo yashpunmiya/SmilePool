@@ -25,9 +25,7 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await hre.midl.initialize();
 
   // 2. Add the deploy contract transaction intention
-  await hre.midl.deploy("SmilePool", {
-    args: [RUNE_ERC20_ADDRESS, REWARD_AMOUNT, SCORE_THRESHOLD],
-  });
+  await hre.midl.deploy("SmilePool", [RUNE_ERC20_ADDRESS, REWARD_AMOUNT, SCORE_THRESHOLD]);
 
   // 3. Sends the BTC transaction and EVM transaction to the network
   await hre.midl.execute();

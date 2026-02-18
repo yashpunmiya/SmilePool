@@ -17,7 +17,7 @@ export function PoolStats() {
       <StatCard
         label="Pool Balance"
         value={isLoading ? "..." : `${Number(data?.poolBalanceFormatted || 0).toFixed(2)}`}
-        suffix="SMILES"
+        suffix="SMILE"
         color="text-btc-orange"
         icon="🏦"
         primary
@@ -25,7 +25,7 @@ export function PoolStats() {
       <StatCard
         label="Reward / Smile"
         value={isLoading ? "..." : `${Number(data?.rewardAmountFormatted || 0).toFixed(2)}`}
-        suffix="SMILES"
+        suffix="SMILE"
         color="text-btc-success"
         icon="🎁"
       />
@@ -60,14 +60,14 @@ export function PoolStats() {
       <StatCard
         label="Total Donated"
         value={isLoading ? "..." : `${Number(data?.totalDonatedFormatted || 0).toFixed(2)}`}
-        suffix="SMILES"
+        suffix="SMILE"
         color="text-emerald-400"
         icon="📥"
       />
       <StatCard
         label="Total Claimed"
         value={isLoading ? "..." : `${Number(data?.totalClaimedFormatted || 0).toFixed(2)}`}
-        suffix="SMILES"
+        suffix="SMILE"
         color="text-rose-400"
         icon="📤"
       />

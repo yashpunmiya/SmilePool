@@ -55,14 +55,14 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
         <div className="bg-btc-amber/10 border border-btc-amber/20 rounded-xl p-3 w-full text-center">
           <p className="text-btc-amber text-xs font-medium">Pool is empty — no rewards yet</p>
           <p className="text-btc-muted text-[10px] mt-1">
-            Switch to "Fund" tab and donate SMILES Rune tokens to enable rewards.
+            Switch to "Fund" tab and donate SMILE Rune tokens to enable rewards.
           </p>
         </div>
       ) : (
         <p className="text-btc-muted text-xs text-center">
           Score <span className="text-btc-success font-bold">{score}</span>/100 — Claim{" "}
           <span className="text-btc-orange font-bold">
-            {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."} SMILES
+            {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."} SMILE
           </span>
         </p>
       )}

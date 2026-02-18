@@ -21,7 +21,7 @@ export const queryClient = new QueryClient({
 
 // Contract config
 export const SMILEPOOL_ADDRESS = (import.meta.env.VITE_CONTRACT_ADDRESS ||
-  "0x7117BC38Efe38113CA86e60B2848Ce99Afacb45A") as `0x${string}`;
+  "0xBe4568D988f6634A6aE7DA89efFAA87F08b6e7a1") as `0x${string}`;
 
 export const MIDL_RPC = "https://rpc.staging.midl.xyz";
 export const CHAIN_ID = 15001;

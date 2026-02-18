@@ -72,7 +72,7 @@ export function DonatePanel() {
         </select>
         {!runesLoading && (!runes?.results || runes.results.length === 0) && (
           <p className="text-btc-muted text-[10px] mt-1">
-            No runes found. Make sure your Xverse wallet is connected with SMILES Rune (200401:1).
+            No runes found. Make sure your Xverse wallet is connected with SMILE Rune (202980:1).
           </p>
         )}
       </div>

@@ -4,14 +4,14 @@ import type { DeployFunction } from "hardhat-deploy/types";
  * Deploy SmilePool contract to MIDL regtest
  *
  * Constructor args:
- *   _rewardToken: ERC20 address of the SMILES Rune (200401:1)
- *   _rewardAmount: Fixed reward per successful smile claim (1 SMILES = 1e18)
+ *   _rewardToken: ERC20 address of the SMILE Rune (202980:1)
+ *   _rewardAmount: Fixed reward per successful smile claim (1 SMILE = 1e18)
  *   _scoreThreshold: Minimum smile score to claim (75)
  */
 const deploy: DeployFunction = async ({ midl }) => {
-  // SMILES Rune (200401:1) ERC20 address on MIDL regtest
-  // Computed via getCreate2RuneAddress("200401:1") from @midl/executor
-  const RUNE_ERC20_ADDRESS = "0x0973670BC8183d6a8b877fc5bAb44cFa9962C8D6";
+  // SMILE Rune (202980:1) ERC20 address on MIDL regtest
+  // Computed via getCreate2RuneAddress("202980:1") from @midl/executor
+  const RUNE_ERC20_ADDRESS = "0x0E267e8EB516adeeA7606483828055a56c198AF2";
 
   // 1 SMILES token per claim (18 decimals)
   const REWARD_AMOUNT = BigInt("1000000000000000000");

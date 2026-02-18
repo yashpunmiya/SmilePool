@@ -244,7 +244,7 @@ export function Leaderboard() {
                   <p className="text-btc-orange text-lg font-bold">
                     {Number(formatUnits(smiler.totalEarned, 18)).toFixed(2)}
                   </p>
-                  <p className="text-btc-muted text-xs">SMILES earned</p>
+                  <p className="text-btc-muted text-xs">SMILE earned</p>
                 </div>
               </motion.div>
             ))}

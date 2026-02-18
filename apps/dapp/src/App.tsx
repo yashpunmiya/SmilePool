@@ -48,10 +48,10 @@ export default function App() {
           className="text-center space-y-3 py-4"
         >
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-            Smile & <span className="text-btc-orange">Earn SMILES</span>
+            Smile & <span className="text-btc-orange">Earn SMILE</span>
           </h2>
           <p className="text-btc-muted text-sm max-w-md mx-auto leading-relaxed">
-            AI scores your smile. Score 75+ to claim SMILES Rune tokens
+            AI scores your smile. Score 75+ to claim SMILE Rune tokens
             from the community pool. Built on Midl Protocol.
           </p>
         </motion.section>

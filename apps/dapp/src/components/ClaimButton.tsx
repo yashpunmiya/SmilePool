@@ -3,6 +3,35 @@ import { useSmilePool, useEVMAddress } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
+import { createPublicClient, http, type Address } from "viem";
+import { MIDL_RPC, CHAIN_ID } from "../config";
+import { smilePoolAbi, smilePoolAddress } from "../lib/contracts";
+
+const midlClient = createPublicClient({
+  chain: {
+    id: CHAIN_ID,
+    name: "MIDL Regtest",
+    nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
+    rpcUrls: { default: { http: [MIDL_RPC] } },
+  } as const,
+  transport: http(MIDL_RPC),
+});
+
+// Custom error decode helper
+function decodeClaimError(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  // Named error strings (viem decodes these if the ABI is provided)
+  if (msg.includes("AlreadyClaimedToday")) return "Already claimed today — come back tomorrow!";
+  if (msg.includes("InsufficientPoolBalance")) return "Pool is empty — someone needs to donate SMILE.";
+  if (msg.includes("ScoreTooLow")) return "Score too low — need 75+ to claim.";
+  if (msg.includes("InvalidNonce")) return "Nonce mismatch — please refresh and try again.";
+  // Bare "execution reverted" from eth_estimateGasMulti (no data available)
+  if (msg.includes("execution reverted")) {
+    return "Transaction would revert. The pool may be low on funds or you may have already claimed today.";
+  }
+  // Return a trimmed version of the raw error
+  return msg.split("\n")[0].replace(/^Error:\s*/i, "").slice(0, 120);
+}
 
 interface ClaimButtonProps {
   score: number | null;
@@ -14,9 +43,37 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
   const evmAddress = useEVMAddress();
   const { data: poolData, refetch } = usePoolBalance();
   const [claimed, setClaimed] = useState(false);
+  const [alreadyClaimedToday, setAlreadyClaimedToday] = useState(false);
 
-  const poolEmpty = poolData ? poolData.poolBalance === 0n : false;
-  const canClaim = score !== null && score >= 75 && !isClaimPending && !claimed && !poolEmpty;
+  // Check if user already claimed today
+  useEffect(() => {
+    if (!evmAddress) return;
+    midlClient
+      .readContract({
+        address: smilePoolAddress,
+        abi: smilePoolAbi,
+        functionName: "lastClaimDay",
+        args: [evmAddress as Address],
+      })
+      .then((lastDay) => {
+        const today = BigInt(Math.floor(Date.now() / 86400000));
+        setAlreadyClaimedToday(BigInt(lastDay as bigint) === today);
+      })
+      .catch(() => setAlreadyClaimedToday(false));
+  }, [evmAddress, claimed]);
+
+  // Pool is insufficient if balance < rewardAmount (not just if balance = 0)
+  const poolInsufficient = poolData
+    ? poolData.poolBalance < poolData.rewardAmount
+    : false;
+
+  const canClaim =
+    score !== null &&
+    score >= 75 &&
+    !isClaimPending &&
+    !claimed &&
+    !poolInsufficient &&
+    !alreadyClaimedToday;
 
   const handleClaim = async () => {
     if (!canClaim || score === null) return;
@@ -51,12 +108,17 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
         🎉 You're Eligible!
       </h3>
 
-      {poolEmpty ? (
+      {poolInsufficient && !alreadyClaimedToday ? (
         <div className="bg-btc-amber/10 border border-btc-amber/20 rounded-xl p-3 w-full text-center">
           <p className="text-btc-amber text-xs font-medium">Pool is empty — no rewards yet</p>
           <p className="text-btc-muted text-[10px] mt-1">
             Switch to "Fund" tab and donate SMILE Rune tokens to enable rewards.
           </p>
+        </div>
+      ) : alreadyClaimedToday ? (
+        <div className="bg-btc-muted/10 border border-btc-border/30 rounded-xl p-3 w-full text-center">
+          <p className="text-btc-muted text-xs font-medium">Already claimed today</p>
+          <p className="text-btc-muted text-[10px] mt-1">Each address can claim once per day. Come back tomorrow!</p>
         </div>
       ) : (
         <p className="text-btc-muted text-xs text-center">
@@ -87,8 +149,10 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
           </span>
         ) : claimed ? (
           "✅ Claimed!"
-        ) : poolEmpty ? (
+        ) : poolInsufficient ? (
           "Pool Empty"
+        ) : alreadyClaimedToday ? (
+          "Come Back Tomorrow"
         ) : (
           "Claim Reward"
         )}
@@ -115,7 +179,7 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
       )}
 
       {error && (
-        <p className="text-btc-danger text-xs text-center">{error}</p>
+        <p className="text-btc-danger text-xs text-center">{decodeClaimError(error)}</p>
       )}
     </motion.div>
   );

@@ -15,6 +15,14 @@ export const smilePoolAbi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  // lastClaimDay mapping getter (for "already claimed today" pre-check)
+  {
+    inputs: [{ name: "user", type: "address" }],
+    name: "lastClaimDay",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
   // donate
   {
     inputs: [{ name: "amount", type: "uint256" }],

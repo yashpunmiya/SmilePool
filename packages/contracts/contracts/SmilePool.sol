@@ -233,8 +233,12 @@ contract SmilePool is Ownable {
         uint256 _totalSmilers,
         uint256 _totalDonations
     ) {
+        uint256 poolBal = 0;
+        try rewardToken.balanceOf(address(this)) returns (uint256 bal) {
+            poolBal = bal;
+        } catch {}
         return (
-            rewardToken.balanceOf(address(this)),
+            poolBal,
             rewardAmount,
             scoreThreshold,
             totalDonated,

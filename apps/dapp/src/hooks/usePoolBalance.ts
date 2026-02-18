@@ -69,23 +69,7 @@ export function usePoolBalance() {
       setError(null);
     } catch (err) {
       console.error("Failed to fetch pool data:", err);
-      // Return default values when pool stats fails
-      // (e.g. Rune ERC20 not deployed yet — happens before first donation)
-      setData({
-        poolBalance: 0n,
-        rewardAmount: 0n,
-        scoreThreshold: 75n,
-        totalDonated: 0n,
-        totalClaimed: 0n,
-        totalSmiles: 0n,
-        totalSmilers: 0n,
-        totalDonations: 0n,
-        poolBalanceFormatted: "0",
-        rewardAmountFormatted: "0",
-        totalDonatedFormatted: "0",
-        totalClaimedFormatted: "0",
-      });
-      setError(null);
+      setError("Failed to load pool data");
     } finally {
       setIsLoading(false);
     }

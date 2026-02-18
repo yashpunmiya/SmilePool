@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useSmilePool } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
-import { useAccounts, useRunes } from "@midl/react";
+import { useRunes } from "@midl/react";
 import { useERC20Rune } from "@midl/executor-react";
 import { parseUnits } from "viem";
 
@@ -12,10 +12,8 @@ export function DonatePanel() {
   const { donate, isDonatePending, lastTx, error } = useSmilePool();
   const { refetch } = usePoolBalance();
 
-  // Get user's runes
-  const { paymentAccount } = useAccounts();
-  const address = paymentAccount?.address || "";
-  const { runes } = useRunes({ address });
+  // Get user's runes — useRunes auto-uses ordinalsAccount when no address given
+  const { runes, isLoading: runesLoading } = useRunes({});
 
   // Get ERC20 address for selected rune  
   const { erc20Address } = useERC20Rune(selectedRuneId || "0:0");
@@ -61,13 +59,22 @@ export function DonatePanel() {
           onChange={(e) => setSelectedRuneId(e.target.value)}
           className="w-full py-2 px-3 rounded-lg bg-btc-gray/60 border border-btc-border/40 text-btc-text text-sm focus:outline-none focus:border-btc-orange/40 transition-colors"
         >
-          <option value="">Choose a rune...</option>
-          {(runes as any)?.map?.((rune: any) => (
-            <option key={rune.id} value={rune.id}>
-              {rune.name || rune.id} — Balance: {rune.balance?.toString() || "0"}
+          <option value="">
+            {runesLoading ? "Loading runes..." : "Choose a rune..."}
+          </option>
+          {runes?.results?.map((runeEntry: any) => (
+            <option key={runeEntry.rune.id} value={runeEntry.rune.id}>
+              {runeEntry.rune.spaced_name || runeEntry.rune.name || runeEntry.rune.id}
+              {" — Balance: "}
+              {runeEntry.balance?.toString() || "0"}
             </option>
           ))}
         </select>
+        {!runesLoading && (!runes?.results || runes.results.length === 0) && (
+          <p className="text-btc-muted text-[10px] mt-1">
+            No runes found. Make sure your Xverse wallet is connected with SMILES Rune (200401:1).
+          </p>
+        )}
       </div>
 
       {/* Amount input */}

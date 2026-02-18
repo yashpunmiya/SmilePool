@@ -4,7 +4,9 @@ import { useSmilePool } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import { useRunes } from "@midl/react";
 import { getCreate2RuneAddress } from "@midl/executor";
-import { formatUnits, parseUnits } from "viem";
+import { parseUnits } from "viem";
+
+const WEI = BigInt(1e18);
 
 type RuneEntry = {
   rune: { id: string; name: string; spaced_name: string; number?: number };
@@ -12,10 +14,10 @@ type RuneEntry = {
   balance: bigint | string;
 };
 
-// Format raw Maestro balance (ERC20 wei, 18 decimals) to a readable number
+// Maestro returns balances scaled by 1e18; convert to whole rune units for display
 function formatRuneBalance(raw: bigint | string): string {
   try {
-    return formatUnits(BigInt(raw.toString()), 18);
+    return (BigInt(raw.toString()) / WEI).toString();
   } catch {
     return "0";
   }
@@ -107,7 +109,7 @@ export function DonatePanel() {
               Balance: <span className="text-btc-text font-semibold">{formatRuneBalance(selectedRune.balance)}</span>
               <button
                 type="button"
-                onClick={() => setAmount(formatRuneBalance(selectedRune.balance))}
+                onClick={() => setAmount((BigInt(selectedRune.balance.toString()) / WEI).toString())}
                 className="ml-1.5 text-btc-orange hover:text-btc-orange/80 font-semibold"
               >
                 MAX

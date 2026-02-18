@@ -1,7 +1,7 @@
 {
-  "address": "0xBe4568D988f6634A6aE7DA89efFAA87F08b6e7a1",
-  "txId": "0xa6714eae6ed09dd5847fe118f53eab4a544ed94ac9d462e422923e06a7e5ed7f",
-  "btcTxId": "e4004515c4f7bde6728ba793005cd1df629295699bb9fdecc9e2f605e968ebfb",
+  "address": "0x95Fe30dc9B2ec2647b57c76a651F0EdEb3790f57",
+  "txId": "0x60a57c6b9ec872e2101df2087667790695bec16637c6b832601bc062ba0db9c3",
+  "btcTxId": "f54d6443c8a1de9da756dd1f03fb7a1c0bf7e2a627278c3e38b2e2cb348b521f",
   "abi": [
     {
       "inputs": [
@@ -758,6 +758,24 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "setUnlimitedClaimer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
@@ -844,6 +862,25 @@
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "unlimitedClaimers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     }
   ]

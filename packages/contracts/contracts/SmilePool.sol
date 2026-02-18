@@ -141,7 +141,11 @@ contract SmilePool is Ownable {
         uint256 codeSize;
         assembly { codeSize := extcodesize(tokenAddr) }
         if (codeSize == 0) return;
-        rewardToken.safeTransferFrom(from, to, amount);
+        (bool ok, bytes memory data) = tokenAddr.call(
+            abi.encodeWithSelector(IERC20.transferFrom.selector, from, to, amount)
+        );
+        // Accept: ok=true with no return data (non-standard), or ok=true with true returned
+        require(ok && (data.length == 0 || abi.decode(data, (bool))), "transferFrom failed");
     }
 
     function _tokenTransfer(address to, uint256 amount) internal {
@@ -149,7 +153,10 @@ contract SmilePool is Ownable {
         uint256 codeSize;
         assembly { codeSize := extcodesize(tokenAddr) }
         if (codeSize == 0) return;
-        rewardToken.safeTransfer(to, amount);
+        (bool ok, bytes memory data) = tokenAddr.call(
+            abi.encodeWithSelector(IERC20.transfer.selector, to, amount)
+        );
+        require(ok && (data.length == 0 || abi.decode(data, (bool))), "transfer failed");
     }
 
     // ═══════════════════════════════════════════

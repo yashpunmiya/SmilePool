@@ -1,7 +1,7 @@
 {
-  "address": "0xb732e74c0f66811a4CF89d598C0B848168eaDd44",
-  "txId": "0xcbb10bce467c0cb8e3f8401d7a838703c4b3518c92729d86847e635c9b7c9484",
-  "btcTxId": "dd5c2f9d79bb2a3f246374b139a9fed75a63f4decdd3a8a90984fab326e0ac22",
+  "address": "0x635284F8F62b8A39AF0b54Bda3531CE8D79FA6Ad",
+  "txId": "0xe3d5e035e9d59c5bedc8c4a0c0d190c135b2ec1dd03d67228598b90e81b3e4a2",
+  "btcTxId": "906153b211790267e0007374ec4e4ebddb13592b6c9255422851ff79987d48c8",
   "abi": [
     {
       "inputs": [
@@ -69,17 +69,6 @@
         }
       ],
       "name": "OwnableUnauthorizedAccount",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "SafeERC20FailedOperation",
       "type": "error"
     },
     {

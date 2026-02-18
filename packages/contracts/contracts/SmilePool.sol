@@ -234,9 +234,17 @@ contract SmilePool is Ownable {
         uint256 _totalDonations
     ) {
         uint256 poolBal = 0;
-        try rewardToken.balanceOf(address(this)) returns (uint256 bal) {
-            poolBal = bal;
-        } catch {}
+        address tokenAddr = address(rewardToken);
+        uint256 codeSize;
+        assembly { codeSize := extcodesize(tokenAddr) }
+        if (codeSize > 0) {
+            (bool ok, bytes memory data) = tokenAddr.staticcall(
+                abi.encodeWithSelector(IERC20.balanceOf.selector, address(this))
+            );
+            if (ok && data.length >= 32) {
+                poolBal = abi.decode(data, (uint256));
+            }
+        }
         return (
             poolBal,
             rewardAmount,

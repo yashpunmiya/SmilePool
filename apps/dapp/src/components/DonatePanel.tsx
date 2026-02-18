@@ -3,30 +3,34 @@ import { motion } from "framer-motion";
 import { useSmilePool } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import { useRunes } from "@midl/react";
-import { useERC20Rune } from "@midl/executor-react";
 import { parseUnits } from "viem";
+
+type RuneEntry = {
+  rune: { id: string; name: string; spaced_name: string; number?: number };
+  address: string;
+  balance: bigint | string;
+};
 
 export function DonatePanel() {
   const [amount, setAmount] = useState("");
-  const [selectedRuneId, setSelectedRuneId] = useState<string>("");
+  const [selectedRune, setSelectedRune] = useState<RuneEntry | null>(null);
   const { donate, isDonatePending, lastTx, error } = useSmilePool();
   const { refetch } = usePoolBalance();
 
   // Get user's runes — useRunes auto-uses ordinalsAccount when no address given
   const { runes, isLoading: runesLoading } = useRunes({});
 
-  // Get ERC20 address for selected rune  
-  const { erc20Address } = useERC20Rune(selectedRuneId || "0:0");
-  const runeAssetAddress = erc20Address?.[0];
+  // ERC20 address comes directly from the rune entry (no executor lookup needed)
+  const runeAssetAddress = selectedRune?.address;
 
   const handleDonate = async () => {
-    if (!amount || !selectedRuneId || !runeAssetAddress) return;
+    if (!amount || !selectedRune || !runeAssetAddress) return;
 
     const amountWei = parseUnits(amount, 18);
     const result = await donate(
       amountWei,
-      runeAssetAddress,
-      selectedRuneId
+      runeAssetAddress as `0x${string}`,
+      selectedRune.rune.id
     );
 
     if (result) {
@@ -55,14 +59,17 @@ export function DonatePanel() {
           Select Rune
         </label>
         <select
-          value={selectedRuneId}
-          onChange={(e) => setSelectedRuneId(e.target.value)}
+          value={selectedRune?.rune.id ?? ""}
+          onChange={(e) => {
+            const entry = runes?.results?.find((r: RuneEntry) => r.rune.id === e.target.value) ?? null;
+            setSelectedRune(entry);
+          }}
           className="w-full py-2 px-3 rounded-lg bg-btc-gray/60 border border-btc-border/40 text-btc-text text-sm focus:outline-none focus:border-btc-orange/40 transition-colors"
         >
           <option value="">
             {runesLoading ? "Loading runes..." : "Choose a rune..."}
           </option>
-          {runes?.results?.map((runeEntry: any) => (
+          {runes?.results?.map((runeEntry: RuneEntry) => (
             <option key={runeEntry.rune.id} value={runeEntry.rune.id}>
               {runeEntry.rune.spaced_name || runeEntry.rune.name || runeEntry.rune.id}
               {" — Balance: "}
@@ -95,9 +102,9 @@ export function DonatePanel() {
 
       <button
         onClick={handleDonate}
-        disabled={!amount || !selectedRuneId || !runeAssetAddress || isDonatePending}
+        disabled={!amount || !selectedRune || !runeAssetAddress || isDonatePending}
         className={`w-full py-2.5 px-6 rounded-xl font-bold text-sm transition-all ${
-          amount && selectedRuneId && !isDonatePending
+          amount && selectedRune && !isDonatePending
             ? "bg-btc-orange text-btc-dark hover:bg-btc-orange/90 shadow-md shadow-btc-orange/20"
             : "bg-btc-muted/20 text-btc-muted cursor-not-allowed"
         }`}

@@ -88,9 +88,16 @@ contract SmilePool is Ownable {
     DonorRecord[] public donationFeed;
 
     // ═══════════════════════════════════════════
+    //  Test Wallet Config (bypass daily cooldown for testing)
+    // ═══════════════════════════════════════════
+    mapping(address => bool) public isTestWallet;
+
+    // ═══════════════════════════════════════════
     //  Events
     // ═══════════════════════════════════════════
     event Donated(address indexed donor, uint256 amount);
+    event TestWalletAdded(address indexed wallet);
+    event TestWalletRemoved(address indexed wallet);
     event SmileSubmitted(
         address indexed smiler,
         uint256 score,
@@ -147,12 +154,14 @@ contract SmilePool is Ownable {
         if (nonce != nonces[msg.sender]) revert InvalidNonce();
         nonces[msg.sender]++;
 
-        // Anti-spam: 1 claim per day
-        uint256 today = block.timestamp / 1 days;
-        if (lastClaimDay[msg.sender] == today) {
-            revert AlreadyClaimedToday();
+        // Anti-spam: 1 claim per day (skip for test wallets)
+        if (!isTestWallet[msg.sender]) {
+            uint256 today = block.timestamp / 1 days;
+            if (lastClaimDay[msg.sender] == today) {
+                revert AlreadyClaimedToday();
+            }
+            lastClaimDay[msg.sender] = today;
         }
-        lastClaimDay[msg.sender] = today;
 
         // Score check
         if (smileScore < scoreThreshold) {
@@ -363,5 +372,26 @@ contract SmilePool is Ownable {
         if (_token == address(0)) revert InvalidTokenAddress();
         rewardToken = IERC20(_token);
         emit TokenUpdated(_token);
+    }
+
+    // ═══════════════════════════════════════════
+    //  Owner: Test Wallet Management
+    // ═══════════════════════════════════════════
+
+    /**
+     * Add a test wallet that can claim unlimited times per day (no daily cooldown)
+     */
+    function addTestWallet(address wallet) external onlyOwner {
+        if (wallet == address(0)) revert InvalidTokenAddress();
+        isTestWallet[wallet] = true;
+        emit TestWalletAdded(wallet);
+    }
+
+    /**
+     * Remove a test wallet (restore daily cooldown limit)
+     */
+    function removeTestWallet(address wallet) external onlyOwner {
+        isTestWallet[wallet] = false;
+        emit TestWalletRemoved(wallet);
     }
 }

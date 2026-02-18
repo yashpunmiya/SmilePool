@@ -158,6 +158,14 @@ export const smilePoolAbi = [
     stateMutability: "view",
     type: "function",
   },
+  // isTestWallet (check if wallet bypasses daily cooldown)
+  {
+    inputs: [{ name: "wallet", type: "address" }],
+    name: "isTestWallet",
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
   // getTotalSmilers
   {
     inputs: [],
@@ -196,6 +204,22 @@ export const smilePoolAbi = [
     name: "totalSmiles",
     outputs: [{ name: "", type: "uint256" }],
     stateMutability: "view",
+    type: "function",
+  },
+  // addTestWallet (owner only)
+  {
+    inputs: [{ name: "wallet", type: "address" }],
+    name: "addTestWallet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  // removeTestWallet (owner only)
+  {
+    inputs: [{ name: "wallet", type: "address" }],
+    name: "removeTestWallet",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   // Events

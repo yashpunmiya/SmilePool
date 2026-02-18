@@ -45,19 +45,30 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
   const [claimed, setClaimed] = useState(false);
   const [alreadyClaimedToday, setAlreadyClaimedToday] = useState(false);
 
-  // Check if user already claimed today
+  // Check if user already claimed today (skip for test wallets)
   useEffect(() => {
     if (!evmAddress) return;
-    midlClient
-      .readContract({
+    Promise.all([
+      midlClient.readContract({
         address: smilePoolAddress,
         abi: smilePoolAbi,
         functionName: "lastClaimDay",
         args: [evmAddress as Address],
-      })
-      .then((lastDay) => {
-        const today = BigInt(Math.floor(Date.now() / 86400000));
-        setAlreadyClaimedToday(BigInt(lastDay as bigint) === today);
+      }),
+      midlClient.readContract({
+        address: smilePoolAddress,
+        abi: smilePoolAbi,
+        functionName: "isTestWallet",
+        args: [evmAddress as Address],
+      }),
+    ])
+      .then(([lastDay, isTest]) => {
+        if (isTest) {
+          setAlreadyClaimedToday(false);
+        } else {
+          const today = BigInt(Math.floor(Date.now() / 86400000));
+          setAlreadyClaimedToday(BigInt(lastDay as bigint) === today);
+        }
       })
       .catch(() => setAlreadyClaimedToday(false));
   }, [evmAddress, claimed]);

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useSmilePool } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import { useRunes } from "@midl/react";
+import { getCreate2RuneAddress } from "@midl/executor";
 import { parseUnits } from "viem";
 
 type RuneEntry = {
@@ -20,16 +21,18 @@ export function DonatePanel() {
   // Get user's runes — useRunes auto-uses ordinalsAccount when no address given
   const { runes, isLoading: runesLoading } = useRunes({});
 
-  // ERC20 address comes directly from the rune entry (no executor lookup needed)
-  const runeAssetAddress = selectedRune?.address;
+  // Derive the ERC20 contract address deterministically from the rune ID (not the holder's BTC address)
+  const runeERC20Address = selectedRune
+    ? getCreate2RuneAddress(selectedRune.rune.id)
+    : undefined;
 
   const handleDonate = async () => {
-    if (!amount || !selectedRune || !runeAssetAddress) return;
+    if (!amount || !selectedRune || !runeERC20Address) return;
 
     const amountWei = parseUnits(amount, 18);
     const result = await donate(
       amountWei,
-      runeAssetAddress as `0x${string}`,
+      runeERC20Address,
       selectedRune.rune.id
     );
 
@@ -102,7 +105,7 @@ export function DonatePanel() {
 
       <button
         onClick={handleDonate}
-        disabled={!amount || !selectedRune || !runeAssetAddress || isDonatePending}
+        disabled={!amount || !selectedRune || !runeERC20Address || isDonatePending}
         className={`w-full py-2.5 px-6 rounded-xl font-bold text-sm transition-all ${
           amount && selectedRune && !isDonatePending
             ? "bg-btc-orange text-btc-dark hover:bg-btc-orange/90 shadow-md shadow-btc-orange/20"

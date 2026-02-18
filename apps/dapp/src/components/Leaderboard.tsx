@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { createPublicClient, http, type Address } from "viem";
+import { createPublicClient, http, formatUnits, type Address } from "viem";
 import { SMILEPOOL_ADDRESS, MIDL_RPC, CHAIN_ID } from "../config";
 import { smilePoolAbi } from "../lib/contracts";
 import { useSmilePhotos } from "../hooks/useSmilePhotos";
@@ -213,7 +213,7 @@ export function Leaderboard() {
                       {entry.score.toString()}
                     </p>
                     <p className="text-btc-orange text-xs font-medium">
-                      +{entry.reward.toString()}
+                      +{Number(formatUnits(entry.reward, 18)).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -266,7 +266,7 @@ export function Leaderboard() {
 
                 <div className="text-right flex-shrink-0">
                   <p className="text-btc-orange text-lg font-bold">
-                    {smiler.totalEarned.toString()}
+                    {Number(formatUnits(smiler.totalEarned, 18)).toFixed(2)}
                   </p>
                   <p className="text-btc-muted text-xs">SMILE earned</p>
                 </div>

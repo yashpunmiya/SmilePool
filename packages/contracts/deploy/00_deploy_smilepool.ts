@@ -13,15 +13,15 @@ const deploy: DeployFunction = async ({ midl }) => {
   // Computed via getCreate2RuneAddress("202980:1") from @midl/executor
   const RUNE_ERC20_ADDRESS = "0x0E267e8EB516adeeA7606483828055a56c198AF2";
 
-  // 1 raw SMILE rune unit per claim (Rune ERC20 has 0 decimals; no 1e18 scaling)
-  const REWARD_AMOUNT = 1n;
+  // 1 SMILE per claim (divisibility=18, so 1 SMILE = 1e18 sub-units)
+  const REWARD_AMOUNT = BigInt("1000000000000000000");
 
   // Minimum score of 75 to claim
   const SCORE_THRESHOLD = 75;
 
   console.log("Starting SmilePool deployment...");
   console.log("  Reward Token:", RUNE_ERC20_ADDRESS);
-  console.log("  Reward Amount:", REWARD_AMOUNT.toString(), "(1 raw SMILE rune unit)");
+  console.log("  Reward Amount:", REWARD_AMOUNT.toString(), "(1 SMILE = 1e18 sub-units)");
   console.log("  Score Threshold:", SCORE_THRESHOLD);
 
   // 1. Initialize the MIDL hardhat deploy SDK

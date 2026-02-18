@@ -82,9 +82,9 @@ export function useSmilePool() {
         });
 
         // Add complete intention — withdraw 1 SMILE rune back to Bitcoin
-        // rewardAmount is 1 raw rune unit (Rune ERC20 has 0 decimals)
+        // rewardAmount is 1 SMILE = 1e18 sub-units (divisibility=18)
         const completeIntention = await addCompleteTxIntentionAsync({
-          runes: [{ id: SMILE_RUNE_ID, amount: 1n }],
+          runes: [{ id: SMILE_RUNE_ID, amount: WEI }],
         });
 
         // 3. Finalize BTC transaction
@@ -141,9 +141,8 @@ export function useSmilePool() {
       setLastTx(null);
 
       try {
-        // The Rune ERC20 stores balances in raw rune units (no 18-decimal scaling).
-        // Maestro returns 18-decimal values; divide by WEI for all on-chain amounts.
-        const runeAmount = amount / WEI;
+        // The Rune ERC20 stores balances in sub-units with divisibility=18 (same as ETH).
+        // amount = parseUnits(userInput, 18) is already the correct raw sub-unit amount.
 
         const approveIntention = await addTxIntentionAsync({
           intention: {
@@ -152,7 +151,7 @@ export function useSmilePool() {
               data: encodeFunctionData({
                 abi: erc20Abi,
                 functionName: "approve",
-                args: [smilePoolAddress, runeAmount],
+                args: [smilePoolAddress, amount],
               }),
             },
           },
@@ -166,11 +165,11 @@ export function useSmilePool() {
               data: encodeFunctionData({
                 abi: smilePoolAbi,
                 functionName: "donate",
-                args: [runeAmount],
+                args: [amount],
               }),
             },
             deposit: {
-              runes: [{ id: runeId, amount: runeAmount, address: runeERC20Address }],
+              runes: [{ id: runeId, amount: amount, address: runeERC20Address }],
             },
           },
         });

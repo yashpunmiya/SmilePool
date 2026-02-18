@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, formatUnits } from "viem";
 import { smilePoolAbi, smilePoolAddress } from "../lib/contracts";
 import { MIDL_RPC, CHAIN_ID } from "../config";
 
@@ -61,10 +61,10 @@ export function usePoolBalance() {
         totalSmiles,
         totalSmilers,
         totalDonations,
-        poolBalanceFormatted: poolBalance.toString(),
-        rewardAmountFormatted: rewardAmount.toString(),
-        totalDonatedFormatted: totalDonated.toString(),
-        totalClaimedFormatted: totalClaimed.toString(),
+        poolBalanceFormatted: formatUnits(poolBalance, 18),
+        rewardAmountFormatted: formatUnits(rewardAmount, 18),
+        totalDonatedFormatted: formatUnits(totalDonated, 18),
+        totalClaimedFormatted: formatUnits(totalClaimed, 18),
       });
       setError(null);
     } catch (err) {

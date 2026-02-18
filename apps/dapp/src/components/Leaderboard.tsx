@@ -61,7 +61,7 @@ export function Leaderboard() {
         setEntries([...(recentData as readonly SmileEntry[])]);
 
         // getTopSmilers returns 4 parallel arrays
-        const [addresses, totalSmiles, bestScores, totalEarned] = topData as readonly [
+        const [addresses, bestScores, totalSmiles, totalEarned] = topData as readonly [
           readonly `0x${string}`[],
           readonly bigint[],
           readonly bigint[],
@@ -115,14 +115,14 @@ export function Leaderboard() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="rounded-2xl bg-btc-card border border-btc-border p-6"
+      className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-5"
     >
       {/* Tab header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-btc-orange flex items-center gap-2">
-          <span className="text-2xl">🏆</span> Leaderboard
+        <h2 className="text-base font-bold text-btc-text flex items-center gap-2">
+          <span className="text-xl">🏆</span> Leaderboard
         </h2>
-        <div className="flex gap-1 bg-btc-gray rounded-lg p-0.5">
+        <div className="flex gap-0.5 bg-btc-gray/80 rounded-lg p-0.5">
           <button
             onClick={() => setTab("feed")}
             className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${

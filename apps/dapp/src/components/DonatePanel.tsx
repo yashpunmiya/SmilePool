@@ -42,25 +42,24 @@ export function DonatePanel() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="rounded-2xl bg-btc-card border border-btc-border p-6 flex flex-col gap-4"
+      className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-5 flex flex-col gap-4"
     >
-      <h2 className="text-xl font-bold text-btc-orange flex items-center gap-2">
-        <span className="text-2xl">💰</span> Fund the Pool
+      <h2 className="text-base font-bold text-btc-text flex items-center gap-2">
+        <span className="text-xl">💰</span> Fund the Pool
       </h2>
-      <p className="text-btc-muted text-sm">
-        Donate Rune tokens to fill the SmilePool reward pool. Your donation helps
-        reward smilers around the world!
+      <p className="text-btc-muted text-xs leading-relaxed">
+        Donate Rune tokens to fill the SmilePool reward pool. Help reward smilers around the world.
       </p>
 
       {/* Rune selector */}
-      <div className="flex flex-col gap-2">
-        <label className="text-xs text-btc-muted uppercase tracking-wider font-medium">
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[10px] text-btc-muted uppercase tracking-widest font-semibold">
           Select Rune
         </label>
         <select
           value={selectedRuneId}
           onChange={(e) => setSelectedRuneId(e.target.value)}
-          className="w-full py-2.5 px-4 rounded-xl bg-btc-gray border border-btc-border text-btc-text text-sm focus:outline-none focus:border-btc-orange transition-colors"
+          className="w-full py-2 px-3 rounded-lg bg-btc-gray/60 border border-btc-border/40 text-btc-text text-sm focus:outline-none focus:border-btc-orange/40 transition-colors"
         >
           <option value="">Choose a rune...</option>
           {(runes as any)?.map?.((rune: any) => (
@@ -72,8 +71,8 @@ export function DonatePanel() {
       </div>
 
       {/* Amount input */}
-      <div className="flex flex-col gap-2">
-        <label className="text-xs text-btc-muted uppercase tracking-wider font-medium">
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[10px] text-btc-muted uppercase tracking-widest font-semibold">
           Amount
         </label>
         <input
@@ -83,17 +82,17 @@ export function DonatePanel() {
           placeholder="100"
           min="0"
           step="1"
-          className="w-full py-2.5 px-4 rounded-xl bg-btc-gray border border-btc-border text-btc-text text-sm focus:outline-none focus:border-btc-orange transition-colors placeholder:text-btc-muted/50"
+          className="w-full py-2 px-3 rounded-lg bg-btc-gray/60 border border-btc-border/40 text-btc-text text-sm focus:outline-none focus:border-btc-orange/40 transition-colors placeholder:text-btc-muted/40"
         />
       </div>
 
       <button
         onClick={handleDonate}
         disabled={!amount || !selectedRuneId || !runeAssetAddress || isDonatePending}
-        className={`w-full py-3 px-6 rounded-xl font-bold text-sm transition-all ${
+        className={`w-full py-2.5 px-6 rounded-xl font-bold text-sm transition-all ${
           amount && selectedRuneId && !isDonatePending
-            ? "bg-btc-orange text-btc-dark hover:bg-btc-orange/90 shadow-lg shadow-btc-orange/20"
-            : "bg-btc-muted/30 text-btc-muted cursor-not-allowed"
+            ? "bg-btc-orange text-btc-dark hover:bg-btc-orange/90 shadow-md shadow-btc-orange/20"
+            : "bg-btc-muted/20 text-btc-muted cursor-not-allowed"
         }`}
       >
         {isDonatePending ? (
@@ -103,10 +102,10 @@ export function DonatePanel() {
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             />
-            Donating... Sign in Xverse
+            Donating...
           </span>
         ) : (
-          "💰 Fund the Pool"
+          "Fund the Pool"
         )}
       </button>
 

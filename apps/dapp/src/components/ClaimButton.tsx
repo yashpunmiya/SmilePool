@@ -15,7 +15,8 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
   const { data: poolData, refetch } = usePoolBalance();
   const [claimed, setClaimed] = useState(false);
 
-  const canClaim = score !== null && score >= 75 && !isClaimPending && !claimed;
+  const poolEmpty = poolData ? poolData.poolBalance === 0n : false;
+  const canClaim = score !== null && score >= 75 && !isClaimPending && !claimed && !poolEmpty;
 
   const handleClaim = async () => {
     if (!canClaim || score === null) return;
@@ -42,30 +43,37 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-gradient-to-br from-btc-orange/10 to-btc-card border border-btc-orange/30 p-6 flex flex-col items-center gap-4"
+      className="rounded-2xl bg-btc-card/80 border border-btc-orange/20 p-5 flex flex-col items-center gap-3"
     >
-      <h3 className="text-lg font-bold text-btc-orange">
+      <h3 className="text-base font-bold text-btc-orange">
         🎉 You're Eligible!
       </h3>
-      <p className="text-btc-muted text-sm text-center">
-        Your smile scored <span className="text-btc-success font-bold">{score}</span>/100!
-        Claim your reward of{" "}
-        <span className="text-btc-orange font-bold">
-          {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."}{" "}
-          SMILES
-        </span>{" "}
-        from the pool.
-      </p>
+
+      {poolEmpty ? (
+        <div className="bg-btc-amber/10 border border-btc-amber/20 rounded-xl p-3 w-full text-center">
+          <p className="text-btc-amber text-xs font-medium">Pool is empty — no rewards yet</p>
+          <p className="text-btc-muted text-[10px] mt-1">
+            Switch to "Fund" tab and donate SMILES Rune tokens to enable rewards.
+          </p>
+        </div>
+      ) : (
+        <p className="text-btc-muted text-xs text-center">
+          Score <span className="text-btc-success font-bold">{score}</span>/100 — Claim{" "}
+          <span className="text-btc-orange font-bold">
+            {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."} SMILES
+          </span>
+        </p>
+      )}
 
       <button
         onClick={handleClaim}
         disabled={!canClaim}
-        className={`w-full py-3 px-6 rounded-xl font-bold text-btc-dark transition-all text-sm ${
+        className={`w-full py-2.5 px-6 rounded-xl font-bold text-btc-dark transition-all text-sm ${
           canClaim
-            ? "bg-btc-orange hover:bg-btc-orange/90 shadow-lg shadow-btc-orange/20 hover:shadow-btc-orange/40"
-            : "bg-btc-muted/30 text-btc-muted cursor-not-allowed"
+            ? "bg-btc-orange hover:bg-btc-orange/90 shadow-md shadow-btc-orange/20"
+            : "bg-btc-muted/20 text-btc-muted cursor-not-allowed"
         }`}
       >
         {isClaimPending ? (
@@ -75,12 +83,14 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             />
-            Claiming... Sign in Xverse
+            Claiming...
           </span>
         ) : claimed ? (
-          "✅ Reward Claimed!"
+          "✅ Claimed!"
+        ) : poolEmpty ? (
+          "Pool Empty"
         ) : (
-          "😊 Claim Reward"
+          "Claim Reward"
         )}
       </button>
 

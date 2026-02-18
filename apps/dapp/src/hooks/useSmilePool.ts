@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useAddTxIntention, useFinalizeBTCTransaction, useSignIntention, useAddCompleteTxIntention } from "@midl/executor-react";
 import { useWaitForTransaction } from "@midl/react";
 import { encodeFunctionData, createPublicClient, http } from "viem";
+import { usePublicClient } from "wagmi";
 import { smilePoolAbi, smilePoolAddress, erc20Abi } from "../lib/contracts";
 import { EXPLORER_URL, MIDL_RPC, CHAIN_ID } from "../config";
 
@@ -26,6 +27,7 @@ export function useSmilePool() {
   const { signIntentionAsync } = useSignIntention();
   const { waitForTransactionAsync } = useWaitForTransaction();
   const { addCompleteTxIntentionAsync } = useAddCompleteTxIntention();
+  const publicClient = usePublicClient();
 
   const [isClaimPending, setIsClaimPending] = useState(false);
   const [isDonatePending, setIsDonatePending] = useState(false);
@@ -91,14 +93,9 @@ export function useSmilePool() {
           signedTransactions.push(signed);
         }
 
-        // 5. Send paired BTC+EVM transactions
-        const client = createPublicClient({
-          chain: midlChain,
-          transport: http(MIDL_RPC),
-        });
-
-        await (client as any).sendBTCTransactions({
-          serializedTransactions: signedTransactions,
+        // 5. Send paired BTC+EVM transactions (using wagmi public client with MIDL extensions)
+        await publicClient?.sendBTCTransactions({
+          serializedTransactions: signedTransactions as `0x${string}`[],
           btcTransaction: tx.hex,
         });
 
@@ -120,7 +117,7 @@ export function useSmilePool() {
         setIsClaimPending(false);
       }
     },
-    [addTxIntentionAsync, addCompleteTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync, fetchNonce]
+    [addTxIntentionAsync, addCompleteTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync, fetchNonce, publicClient]
   );
 
   /**
@@ -175,9 +172,8 @@ export function useSmilePool() {
           signedTransactions.push(signed);
         }
 
-        const client = createPublicClient({ chain: midlChain, transport: http(MIDL_RPC) });
-        await (client as any).sendBTCTransactions({
-          serializedTransactions: signedTransactions,
+        await publicClient?.sendBTCTransactions({
+          serializedTransactions: signedTransactions as `0x${string}`[],
           btcTransaction: tx.hex,
         });
 
@@ -198,7 +194,7 @@ export function useSmilePool() {
         setIsDonatePending(false);
       }
     },
-    [addTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync]
+    [addTxIntentionAsync, finalizeBTCTransactionAsync, signIntentionAsync, waitForTransactionAsync, publicClient]
   );
 
   return {

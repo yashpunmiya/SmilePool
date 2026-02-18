@@ -41,7 +41,7 @@ If no human face is detected in the image, respond with:
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: [
         {
           role: "user",

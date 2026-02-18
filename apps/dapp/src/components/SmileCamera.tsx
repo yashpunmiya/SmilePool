@@ -5,9 +5,10 @@ import { ScoreMeter } from "./ScoreMeter";
 
 interface SmileCameraProps {
   onScoreReady: (score: number) => void;
+  onPhotoReady?: (dataUrl: string, score: number) => void;
 }
 
-export function SmileCamera({ onScoreReady }: SmileCameraProps) {
+export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,8 +59,9 @@ export function SmileCamera({ onScoreReady }: SmileCameraProps) {
     const result = await analyze(base64, "image/jpeg");
     if (result && result.hasFace) {
       onScoreReady(result.score);
+      onPhotoReady?.(dataUrl, result.score);
     }
-  }, [analyze, onScoreReady, stopCamera]);
+  }, [analyze, onScoreReady, onPhotoReady, stopCamera]);
 
   const handleFileUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,11 +80,12 @@ export function SmileCamera({ onScoreReady }: SmileCameraProps) {
         const result = await analyze(base64, mimeType);
         if (result && result.hasFace) {
           onScoreReady(result.score);
+          onPhotoReady?.(dataUrl, result.score);
         }
       };
       reader.readAsDataURL(file);
     },
-    [analyze, onScoreReady, stopCamera]
+    [analyze, onScoreReady, onPhotoReady, stopCamera]
   );
 
   const resetAll = useCallback(() => {

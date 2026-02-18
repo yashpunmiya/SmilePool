@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { createPublicClient, http, formatUnits, type Address } from "viem";
 import { SMILEPOOL_ADDRESS, MIDL_RPC, CHAIN_ID } from "../config";
 import { smilePoolAbi } from "../lib/contracts";
+import { useSmilePhotos } from "../hooks/useSmilePhotos";
 
 const midlChain = {
   id: CHAIN_ID,
@@ -33,6 +34,12 @@ export function Leaderboard() {
   const [topSmilers, setTopSmilers] = useState<TopSmiler[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<LeaderboardTab>("feed");
+
+  // Collect all unique addresses for photo lookup
+  const feedAddresses = entries.map((e) => e.smiler);
+  const topAddresses = topSmilers.map((s) => s.address);
+  const allAddresses = [...new Set([...feedAddresses, ...topAddresses])];
+  const photos = useSmilePhotos(allAddresses);
 
   useEffect(() => {
     async function fetchData() {
@@ -169,10 +176,18 @@ export function Leaderboard() {
                 className="p-3 rounded-xl border bg-btc-gray/50 border-btc-border/50"
               >
                 <div className="flex items-center gap-3">
-                  {/* Rank */}
-                  <span className="text-lg w-8 text-center font-bold">
-                    {getMedal(i)}
-                  </span>
+                  {/* Photo avatar or rank */}
+                  {photos[entry.smiler.toLowerCase()] ? (
+                    <img
+                      src={photos[entry.smiler.toLowerCase()]}
+                      alt="smile"
+                      className="w-9 h-9 rounded-full object-cover border-2 border-btc-orange/40 flex-shrink-0"
+                    />
+                  ) : (
+                    <span className="text-lg w-9 text-center font-bold flex-shrink-0">
+                      {getMedal(i)}
+                    </span>
+                  )}
 
                   {/* User + message */}
                   <div className="flex-1 min-w-0">
@@ -230,6 +245,15 @@ export function Leaderboard() {
                 <span className="text-lg w-8 text-center font-bold">
                   {getMedal(i)}
                 </span>
+
+                {/* Photo avatar */}
+                {photos[smiler.address.toLowerCase()] && (
+                  <img
+                    src={photos[smiler.address.toLowerCase()]}
+                    alt="smile"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-btc-orange/40 flex-shrink-0"
+                  />
+                )}
 
                 <div className="flex-1 min-w-0">
                   <p className="text-btc-text text-sm font-mono truncate">

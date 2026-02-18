@@ -4,13 +4,22 @@ import { useSmilePool } from "../hooks/useSmilePool";
 import { usePoolBalance } from "../hooks/usePoolBalance";
 import { useRunes } from "@midl/react";
 import { getCreate2RuneAddress } from "@midl/executor";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 
 type RuneEntry = {
   rune: { id: string; name: string; spaced_name: string; number?: number };
   address: string;
   balance: bigint | string;
 };
+
+// Format raw Maestro balance (ERC20 wei, 18 decimals) to a readable number
+function formatRuneBalance(raw: bigint | string): string {
+  try {
+    return formatUnits(BigInt(raw.toString()), 18);
+  } catch {
+    return "0";
+  }
+}
 
 export function DonatePanel() {
   const [amount, setAmount] = useState("");
@@ -76,7 +85,7 @@ export function DonatePanel() {
             <option key={runeEntry.rune.id} value={runeEntry.rune.id}>
               {runeEntry.rune.spaced_name || runeEntry.rune.name || runeEntry.rune.id}
               {" — Balance: "}
-              {runeEntry.balance?.toString() || "0"}
+              {formatRuneBalance(runeEntry.balance)}
             </option>
           ))}
         </select>
@@ -89,9 +98,23 @@ export function DonatePanel() {
 
       {/* Amount input */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-[10px] text-btc-muted uppercase tracking-widest font-semibold">
-          Amount
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="text-[10px] text-btc-muted uppercase tracking-widest font-semibold">
+            Amount
+          </label>
+          {selectedRune && (
+            <span className="text-[10px] text-btc-muted">
+              Balance: <span className="text-btc-text font-semibold">{formatRuneBalance(selectedRune.balance)}</span>
+              <button
+                type="button"
+                onClick={() => setAmount(formatRuneBalance(selectedRune.balance))}
+                className="ml-1.5 text-btc-orange hover:text-btc-orange/80 font-semibold"
+              >
+                MAX
+              </button>
+            </span>
+          )}
+        </div>
         <input
           type="number"
           value={amount}

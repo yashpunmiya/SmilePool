@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WalletConnect } from "./components/WalletConnect";
 import { PoolStats } from "./components/PoolStats";
@@ -7,6 +7,8 @@ import { ClaimButton } from "./components/ClaimButton";
 import { DonatePanel } from "./components/DonatePanel";
 import { Leaderboard } from "./components/Leaderboard";
 import { useAccounts } from "@midl/react";
+import { useEVMAddress } from "@midl/executor-react";
+import { uploadSmilePhoto } from "./lib/smileStorage";
 
 type Tab = "smile" | "donate" | "feed";
 
@@ -15,6 +17,16 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("smile");
   const { isConnected } = useAccounts();
+  const evmAddress = useEVMAddress();
+
+  const handlePhotoReady = useCallback(
+    (dataUrl: string, photoScore: number) => {
+      if (!evmAddress) return;
+      // fire-and-forget — don't block UI
+      uploadSmilePhoto(evmAddress, dataUrl, photoScore).catch(console.error);
+    },
+    [evmAddress]
+  );
 
   return (
     <div className="min-h-screen bg-btc-dark text-btc-text noise-bg">
@@ -98,7 +110,7 @@ export default function App() {
               >
                 <div className="grid md:grid-cols-2 gap-5">
                   {/* Camera */}
-                  <SmileCamera onScoreReady={setScore} />
+                  <SmileCamera onScoreReady={setScore} onPhotoReady={handlePhotoReady} />
 
                   {/* Claim panel */}
                   <div className="space-y-4">

@@ -6,6 +6,10 @@ import { usePublicClient } from "wagmi";
 import { smilePoolAbi, smilePoolAddress, erc20Abi } from "../lib/contracts";
 import { EXPLORER_URL, MIDL_RPC, CHAIN_ID } from "../config";
 
+// SMILE rune ID and reward amount (1 SMILE = 1 raw unit, ERC20 uses 18 decimals)
+const SMILE_RUNE_ID = "202980:1";
+const WEI = BigInt(1e18);
+
 // Re-export for convenience
 export { useEVMAddress } from "@midl/executor-react";
 
@@ -77,8 +81,11 @@ export function useSmilePool() {
           reset: true,
         });
 
-        // 2. Add complete intention (to receive rune tokens back to BTC)
-        const completeIntention = await addCompleteTxIntentionAsync({});
+        // 2. Add complete intention — withdraw 1 SMILE rune back to Bitcoin
+        // rewardAmount is 1e18 wei = 1 raw rune unit
+        const completeIntention = await addCompleteTxIntentionAsync({
+          runes: [{ id: SMILE_RUNE_ID, amount: 1n }],
+        });
 
         // 3. Finalize BTC transaction
         const { tx } = await finalizeBTCTransactionAsync({});
@@ -159,7 +166,9 @@ export function useSmilePool() {
               }),
             },
             deposit: {
-              runes: [{ id: runeId, amount, address: runeERC20Address }],
+              // amount in raw rune units: Maestro balance is in ERC20 wei (18 decimals)
+              // so divide by 1e18 to get the raw rune count the BTC layer expects
+              runes: [{ id: runeId, amount: amount / WEI, address: runeERC20Address }],
             },
           },
         });

@@ -6,6 +6,7 @@ import { SmileCamera } from "./components/SmileCamera";
 import { ClaimButton } from "./components/ClaimButton";
 import { DonatePanel } from "./components/DonatePanel";
 import { Leaderboard } from "./components/Leaderboard";
+import { DonorsLeaderboard } from "./components/DonorsLeaderboard";
 import { SmileFeed } from "./components/SmileFeed";
 import { useAccounts } from "@midl/react";
 import { useEVMAddress } from "@midl/executor-react";
@@ -212,9 +213,12 @@ export default function App() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.15 }}
-                className="max-w-lg mx-auto"
+                className="space-y-6"
               >
-                <DonatePanel />
+                <div className="max-w-lg mx-auto">
+                  <DonatePanel />
+                </div>
+                <DonorsLeaderboard />
               </motion.div>
             ) : (
               <motion.div

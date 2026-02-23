@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
 import { useAddTxIntention, useFinalizeBTCTransaction, useSignIntention, useAddCompleteTxIntention } from "@midl/executor-react";
 import { useWaitForTransaction } from "@midl/react";
-import { encodeFunctionData, createPublicClient, http } from "viem";
+import { encodeFunctionData, createPublicClient, http, parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
 import { smilePoolAbi, smilePoolAddress, erc20Abi } from "../lib/contracts";
-import { EXPLORER_URL, MIDL_RPC, CHAIN_ID } from "../config";
+import { EXPLORER_URL, MEMPOOL_URL, MIDL_RPC, CHAIN_ID } from "../config";
 
 // SMILE rune ID and reward amount (1 SMILE = 1 raw unit, ERC20 uses 18 decimals)
 const SMILE_RUNE_ID = "202980:1";
@@ -113,9 +113,32 @@ export function useSmilePool() {
         // 6. Wait for confirmation
         await waitForTransactionAsync({ txId: tx.id });
 
+        // 7. Get the real EVM tx hash from the SmileSubmitted event log
+        //    tx.id is the BTC hash; Blockscout needs the EVM 0x hash
+        let evmTxHash: string = tx.id;
+        let explorerUrl = `${MEMPOOL_URL}/tx/${tx.id}`;
+        try {
+          const currentBlock = await (publicClient as ReturnType<typeof createPublicClient>).getBlockNumber();
+          const logs = await (publicClient as ReturnType<typeof createPublicClient>).getLogs({
+            address: smilePoolAddress,
+            event: parseAbiItem(
+              "event SmileSubmitted(address indexed smiler, uint256 score, uint256 reward, string message, uint256 feedIndex)"
+            ),
+            fromBlock: currentBlock - 20n,
+            toBlock: currentBlock,
+          });
+          const lastLog = logs.at(-1);
+          if (lastLog?.transactionHash) {
+            evmTxHash = lastLog.transactionHash;
+            explorerUrl = `${EXPLORER_URL}/tx/${lastLog.transactionHash}`;
+          }
+        } catch {
+          // fallback to BTC mempool link
+        }
+
         const result: TxResult = {
-          txId: tx.id,
-          explorerUrl: `${EXPLORER_URL}/tx/${tx.id}`,
+          txId: evmTxHash,
+          explorerUrl,
         };
         setLastTx(result);
         return result;
@@ -193,9 +216,29 @@ export function useSmilePool() {
 
         await waitForTransactionAsync({ txId: tx.id });
 
+        // Get the real EVM tx hash from the Donated event log
+        let evmTxHash: string = tx.id;
+        let explorerUrl = `${MEMPOOL_URL}/tx/${tx.id}`;
+        try {
+          const currentBlock = await (publicClient as ReturnType<typeof createPublicClient>).getBlockNumber();
+          const logs = await (publicClient as ReturnType<typeof createPublicClient>).getLogs({
+            address: smilePoolAddress,
+            event: parseAbiItem("event Donated(address indexed donor, uint256 amount)"),
+            fromBlock: currentBlock - 20n,
+            toBlock: currentBlock,
+          });
+          const lastLog = logs.at(-1);
+          if (lastLog?.transactionHash) {
+            evmTxHash = lastLog.transactionHash;
+            explorerUrl = `${EXPLORER_URL}/tx/${lastLog.transactionHash}`;
+          }
+        } catch {
+          // fallback to BTC mempool link
+        }
+
         const result: TxResult = {
-          txId: tx.id,
-          explorerUrl: `${EXPLORER_URL}/tx/${tx.id}`,
+          txId: evmTxHash,
+          explorerUrl,
         };
         setLastTx(result);
         return result;

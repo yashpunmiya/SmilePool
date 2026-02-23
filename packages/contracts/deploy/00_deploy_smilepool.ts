@@ -29,15 +29,15 @@ const deploy: DeployFunction = async ({ midl }) => {
 
   console.log("  Deployer EVM address:", midl.evm.address);
 
-  // 2. Deploy the SmilePool contract
+  // 2. Deploy the SmilePool contract (manual gas to bypass broken estimateGasMulti)
   await midl.deploy("SmilePool", [
     RUNE_ERC20_ADDRESS,
     REWARD_AMOUNT,
     SCORE_THRESHOLD,
-  ]);
+  ], { gas: 3_000_000n });
 
-  // 3. Execute the transaction (BTC + EVM)
-  await midl.execute();
+  // 3. Execute the transaction (BTC + EVM), skip gas estimation
+  await midl.execute({ skipEstimateGas: true });
 
   const deployment = await midl.get("SmilePool");
   console.log("SmilePool deployed at:", deployment?.address);

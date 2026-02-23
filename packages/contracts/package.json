@@ -11,10 +11,11 @@
     "address": "hardhat midl:address"
   },
   "devDependencies": {
-    "@midl/core": "3.0.2",
-    "@midl/executor": "3.0.2",
-    "@midl/hardhat-deploy": "3.0.2",
-    "@midl/logger": "^3.0.2",
+    "@midl/core": "3.0.3",
+    "@midl/executor": "3.0.3",
+    "@midl/hardhat-deploy": "3.0.3",
+    "@midl/logger": "^3.0.3",
+    "@midl/node": "3.0.3",
     "@nomicfoundation/hardhat-verify": "^2.1.1",
     "@openzeppelin/contracts": "^5.4.0",
     "dotenv": "^17.3.1",

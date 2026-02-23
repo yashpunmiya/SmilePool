@@ -8,6 +8,7 @@ import { EXPLORER_URL, MIDL_RPC, CHAIN_ID } from "../config";
 
 // SMILE rune ID and reward amount (1 SMILE = 1 raw unit, ERC20 uses 18 decimals)
 const SMILE_RUNE_ID = "202980:1";
+const SMILE_ERC20_ADDRESS = "0x0E267e8EB516adeeA7606483828055a56c198AF2" as `0x${string}`;
 const WEI = BigInt(1e18);
 
 // Re-export for convenience
@@ -67,6 +68,8 @@ export function useSmilePool() {
         const nonce = evmAddress ? await fetchNonce(evmAddress) : 0n;
 
         // 1. Create the claimReward transaction intention
+        //    No deposit.runes here — we're NOT sending runes from BTC to EVM.
+        //    The contract transfers SMILE ERC20 from pool to user on the EVM side.
         const claimIntention = await addTxIntentionAsync({
           intention: {
             evmTransaction: {
@@ -83,8 +86,9 @@ export function useSmilePool() {
 
         // Add complete intention — withdraw 1 SMILE rune back to Bitcoin
         // rewardAmount is 1 SMILE = 1e18 sub-units (divisibility=18)
+        // Must include address so the executor maps ERC20 burn to Bitcoin Rune output
         const completeIntention = await addCompleteTxIntentionAsync({
-          runes: [{ id: SMILE_RUNE_ID, amount: WEI }],
+          runes: [{ id: SMILE_RUNE_ID, amount: WEI, address: SMILE_ERC20_ADDRESS }],
         });
 
         // 3. Finalize BTC transaction

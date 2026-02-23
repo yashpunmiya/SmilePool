@@ -90,17 +90,20 @@ importers:
   packages/contracts:
     devDependencies:
       '@midl/core':
-        specifier: 3.0.2
-        version: 3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+        specifier: 3.0.3
+        version: 3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
       '@midl/executor':
-        specifier: 3.0.2
-        version: 3.0.2(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+        specifier: 3.0.3
+        version: 3.0.3(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
       '@midl/hardhat-deploy':
-        specifier: 3.0.2
-        version: 3.0.2(22936f1fcf16f771f34d53b90010369d)
+        specifier: 3.0.3
+        version: 3.0.3(c1c71ba8fe08818b788e092a432ec2c8)
       '@midl/logger':
-        specifier: ^3.0.2
-        version: 3.0.2
+        specifier: ^3.0.3
+        version: 3.0.3
+      '@midl/node':
+        specifier: 3.0.3
+        version: 3.0.3(@midl/core@3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)
       '@nomicfoundation/hardhat-verify':
         specifier: ^2.1.1
         version: 2.1.3(hardhat@2.28.6(bufferutil@4.1.0)(ts-node@10.9.2(@types/node@25.2.3)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10))
@@ -1067,8 +1070,8 @@ packages:
   '@midl/core@3.0.1':
     resolution: {integrity: sha512-hZSX9xCHT4z+nWre3LhnhPYBTPzkh8UIJw4IzBatnfpDvFg3VcHbomsE+6yPRq0ma8Ua+rxU8DzKCZ7HksWF5A==}
 
-  '@midl/core@3.0.2':
-    resolution: {integrity: sha512-15JHubCWM4fifsq5/LcbB2Pas25NpypWnXpzxq3xIMI2/IqP4dFqphVXm6rxdndzKk0+JZX7Vcj/9k09HPZ/tw==}
+  '@midl/core@3.0.3':
+    resolution: {integrity: sha512-PaX+KyAWqCdD1vxJ0LPD0zPDYFbgbGUGdsVxhjNNgR1fPQo26Mv+rxzEptWEwaEc4h2ZvJSo+HPYLJEtuNGboA==}
 
   '@midl/ethers@6.13.0-4':
     resolution: {integrity: sha512-wnU2Pb8oZfu8FJXjUY7F+UXf4emcdi99RT+NXlLvJq2IwHAlc3SpXsD50kr6LVOCpPBVyZrTp1G/N437cHpfcQ==}
@@ -1092,20 +1095,20 @@ packages:
       '@midl/viem': '*'
       bitcoinjs-lib: '>=7 <8'
 
-  '@midl/executor@3.0.2':
-    resolution: {integrity: sha512-wNMibttwQvZR5CKhwzoES4o+jjTHdhgRXSaaYl0V81uxeBHEN0iaSXiDy4qxTtyYIdIBEoBflbnL9SufX2M6Fg==}
+  '@midl/executor@3.0.3':
+    resolution: {integrity: sha512-xtlJtlnWxbZ0UL2GNNohsF3FZnBLMNM84IIwzDQOdtTsCZfdrAn/VucdwRLuxLNqt2AovUIlqfLCpFqhz4SzWw==}
     peerDependencies:
       '@midl/viem': '*'
       bitcoinjs-lib: '>=7 <8'
       viem: '*'
 
-  '@midl/hardhat-deploy@3.0.2':
-    resolution: {integrity: sha512-P1nm4+lFg2RsaO/HaPOd+ArJWFwQNTQezELIbxehyuyJZK/ExGR/XdzcN0TnZdboqW8v7YfXxZBIjWPUxuD5rw==}
+  '@midl/hardhat-deploy@3.0.3':
+    resolution: {integrity: sha512-wErzj1yoSmy37CVNnfP2w7yOZl3RaxI0YeKryU+vxDuFwkW014IBU3L3le/VIca2cewAp/szSLk/eS4EcyXgpg==}
     peerDependencies:
-      '@midl/core': ^3.0.2
-      '@midl/executor': ^3.0.2
-      '@midl/logger': 3.0.2
-      '@midl/node': ^3.0.2
+      '@midl/core': ^3.0.3
+      '@midl/executor': ^3.0.3
+      '@midl/logger': 3.0.3
+      '@midl/node': ^3.0.3
       '@midl/viem': '*'
       hardhat: '>=2 <3'
       viem: '*'
@@ -1113,13 +1116,13 @@ packages:
   '@midl/logger@3.0.1':
     resolution: {integrity: sha512-VUtg/tVzNPxQVUWx1Y7URJ00gMzYl/Nm26mua+wlZ4Iscd6cKVo+nRfnyvKfTrNTEPcSflxpdHs8uHzkBcIv5A==}
 
-  '@midl/logger@3.0.2':
-    resolution: {integrity: sha512-NZjXSOuAjYOqqb7oQpBBdKU783/z9KerlhYm/nHcfASxB5c67s5mAmHujqyvbJUOxpnrAaqV1tQ2ji8q6pb49A==}
+  '@midl/logger@3.0.3':
+    resolution: {integrity: sha512-SJPI+Hd9+cstNkQdEG+bRhf5DuLHxYZ0CmzUUB0L+AXVc/VYAjvamXiOKE4XZ8lxw1UJr1r0KnSvAsoQFl1dWQ==}
 
-  '@midl/node@3.0.2':
-    resolution: {integrity: sha512-t4o4krARdhXrt9v1SmPchicthLYoPb8yB6nkRNk5ooJh1CDtMO/PBmb92EcpK4yD9W92D7q/Bl+FHZxSEDUpkQ==}
+  '@midl/node@3.0.3':
+    resolution: {integrity: sha512-W1Rz0oZduh00yKdkjthLM+auiW9qxzG0Kgexb7B/KXabjpCRqDwRVcJUQx3YEs7nTuHHsxnFtW3o2KEaKDKeCQ==}
     peerDependencies:
-      '@midl/core': ^3.0.2
+      '@midl/core': ^3.0.3
 
   '@midl/react@3.0.1':
     resolution: {integrity: sha512-ltkJ91am16h1MOIpLjK+OtR32Kg2Rivl7kJNK+2V+atyUit5OSJSq9VB3UUZYfY56wZzuFW6wBt3UNDsu/L/gg==}
@@ -1229,6 +1232,9 @@ packages:
 
   '@noble/secp256k1@1.7.1':
     resolution: {integrity: sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==}
+
+  '@noble/secp256k1@1.7.2':
+    resolution: {integrity: sha512-/qzwYl5eFLH8OWIecQWM31qld2g1NfjgylK+TNhqtaUKP37Nm+Y+z30Fjhw0Ct8p9yCQEm2N3W/AckdIb3SMcQ==}
 
   '@nomicfoundation/edr-darwin-arm64@0.12.0-next.23':
     resolution: {integrity: sha512-Amh7mRoDzZyJJ4efqoePqdoZOzharmSOttZuJDlVE5yy07BoE8hL6ZRpa5fNYn0LCqn/KoWs8OHANWxhKDGhvQ==}
@@ -2752,6 +2758,9 @@ packages:
   bn.js@5.2.2:
     resolution: {integrity: sha512-v2YAxEmKaBLahNwE1mjp4WON6huMNeuDvagFZW+ASCuA/ku0bXR9hSMw0XpiqMoA3+rmnyck/tPRSFQkoC9Cuw==}
 
+  bn.js@5.2.3:
+    resolution: {integrity: sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w==}
+
   boring-avatars@2.0.4:
     resolution: {integrity: sha512-xhZO/w/6aFmRfkaWohcl2NfyIy87gK5SBbys8kctZeTGF1Apjpv/10pfUuv+YEfVPkESU/h2Y6tt/Dwp+bIZPw==}
     peerDependencies:
@@ -3219,6 +3228,9 @@ packages:
 
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
+
+  eventemitter3@5.0.4:
+    resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
@@ -4172,8 +4184,8 @@ packages:
   preact@10.24.2:
     resolution: {integrity: sha512-1cSoF0aCC8uaARATfrlz4VCBqE8LwZwRfLgkxJOQwAlQt6ayTmi0D9OF7nXid1POI5SZidFuG9CnlXbDfLqY/Q==}
 
-  preact@10.28.3:
-    resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
+  preact@10.28.4:
+    resolution: {integrity: sha512-uKFfOHWuSNpRFVTnljsCluEFq57OKT+0QdOiQo8XWnQ/pSvg7OpX5eNOejELXJMWy+BwM2nobz0FkvzmnpCNsQ==}
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -5307,14 +5319,14 @@ snapshots:
 
   '@coinbase/wallet-sdk@3.9.3':
     dependencies:
-      bn.js: 5.2.2
+      bn.js: 5.2.3
       buffer: 6.0.3
       clsx: 1.2.1
       eth-block-tracker: 7.1.0
       eth-json-rpc-filters: 6.0.1
-      eventemitter3: 5.0.1
+      eventemitter3: 5.0.4
       keccak: 3.0.4
-      preact: 10.28.3
+      preact: 10.28.4
       sha.js: 2.4.12
     transitivePeerDependencies:
       - supports-color
@@ -6435,10 +6447,10 @@ snapshots:
       - typescript
       - use-sync-external-store
 
-  '@midl/core@3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))':
+  '@midl/core@3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))':
     dependencies:
       '@bitcoinerlab/secp256k1': 1.2.0
-      '@midl/logger': 3.0.2
+      '@midl/logger': 3.0.3
       '@midl/runelib': 1.0.9(typescript@5.9.3)
       '@noble/hashes': 2.0.1
       bitcoinjs-lib: 7.0.1(typescript@5.9.3)
@@ -6510,16 +6522,16 @@ snapshots:
       - typescript
       - use-sync-external-store
 
-  '@midl/executor@3.0.2(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))':
+  '@midl/executor@3.0.3(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))':
     dependencies:
       '@bitcoinerlab/secp256k1': 1.2.0
       '@midl/bip322-js': 3.0.1(typescript@5.9.3)
       '@midl/contracts': 1.0.12
-      '@midl/core': 3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
-      '@midl/logger': 3.0.2
+      '@midl/core': 3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+      '@midl/logger': 3.0.3
       '@midl/viem': 2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@noble/hashes': 2.0.1
-      '@noble/secp256k1': 1.7.1
+      '@noble/secp256k1': 1.7.2
       '@scure/base': 2.0.0
       '@scure/btc-signer': 1.4.0
       bitcoinjs-lib: 7.0.1(typescript@5.9.3)
@@ -6532,12 +6544,12 @@ snapshots:
       - use-sync-external-store
       - ws
 
-  '@midl/hardhat-deploy@3.0.2(22936f1fcf16f771f34d53b90010369d)':
+  '@midl/hardhat-deploy@3.0.3(c1c71ba8fe08818b788e092a432ec2c8)':
     dependencies:
-      '@midl/core': 3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
-      '@midl/executor': 3.0.2(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
-      '@midl/logger': 3.0.2
-      '@midl/node': 3.0.2(@midl/core@3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)
+      '@midl/core': 3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+      '@midl/executor': 3.0.3(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@types/react@19.2.14)(bitcoinjs-lib@7.0.1(typescript@5.9.3))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+      '@midl/logger': 3.0.3
+      '@midl/node': 3.0.3(@midl/core@3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)
       '@midl/viem': 2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@nomicfoundation/hardhat-viem': 2.1.3(@midl/viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(hardhat@2.28.6(bufferutil@4.1.0)(ts-node@10.9.2(@types/node@25.2.3)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10))(typescript@5.9.3)(zod@3.25.76)
       hardhat: 2.28.6(bufferutil@4.1.0)(ts-node@10.9.2(@types/node@25.2.3)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -6555,14 +6567,14 @@ snapshots:
     dependencies:
       '@logtape/logtape': 1.3.7
 
-  '@midl/logger@3.0.2':
+  '@midl/logger@3.0.3':
     dependencies:
       '@logtape/logtape': 1.3.7
 
-  '@midl/node@3.0.2(@midl/core@3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)':
+  '@midl/node@3.0.3(@midl/core@3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(typescript@5.9.3)':
     dependencies:
       '@bitcoinerlab/secp256k1': 1.2.0
-      '@midl/core': 3.0.2(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+      '@midl/core': 3.0.3(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
       '@noble/hashes': 2.0.1
       bip32: 5.0.0-rc.0(typescript@5.9.3)
       bip39: 3.1.0
@@ -6740,6 +6752,8 @@ snapshots:
   '@noble/hashes@2.0.1': {}
 
   '@noble/secp256k1@1.7.1': {}
+
+  '@noble/secp256k1@1.7.2': {}
 
   '@nomicfoundation/edr-darwin-arm64@0.12.0-next.23': {}
 
@@ -9378,6 +9392,8 @@ snapshots:
 
   bn.js@5.2.2: {}
 
+  bn.js@5.2.3: {}
+
   boring-avatars@2.0.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
@@ -9968,6 +9984,8 @@ snapshots:
   eventemitter2@6.4.9: {}
 
   eventemitter3@5.0.1: {}
+
+  eventemitter3@5.0.4: {}
 
   events@3.3.0: {}
 
@@ -11043,7 +11061,7 @@ snapshots:
 
   preact@10.24.2: {}
 
-  preact@10.28.3: {}
+  preact@10.28.4: {}
 
   process-nextick-args@2.0.1: {}
 

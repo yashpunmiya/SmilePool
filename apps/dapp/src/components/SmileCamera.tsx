@@ -96,12 +96,13 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-5 flex flex-col items-center gap-5"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-[32px] glass-panel p-6 flex flex-col items-center gap-5 border border-black/5 overflow-hidden relative shadow-sm"
     >
-      <h2 className="text-base font-bold text-btc-text flex items-center gap-2">
-        <span className="text-xl">📸</span> Smile Scanner
+      <div className="absolute top-[-20%] left-[-20%] w-[50%] h-[50%] bg-btc-orange/10 rounded-full blur-[100px] pointer-events-none" />
+      <h2 className="text-xl font-black text-btc-dark flex items-center gap-3 z-10">
+        <span className="text-2xl drop-shadow-md">📸</span> Smile Scanner
       </h2>
 
       <canvas ref={canvasRef} className="hidden" />
@@ -120,16 +121,16 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
               <img
                 src={capturedImage}
                 alt="Captured selfie"
-                className="w-40 h-40 rounded-xl object-cover border border-btc-border/50"
+                className="w-48 h-48 rounded-3xl object-cover shadow-2xl shadow-black/40 ring-4 ring-btc-orange/20"
               />
             )}
             <ScoreMeter score={result.score} />
-            <p className="text-btc-muted text-center text-xs italic">
+            <p className="text-btc-muted text-center text-sm font-medium italic mt-2">
               "{result.message}"
             </p>
             <button
               onClick={resetAll}
-              className="px-5 py-2 rounded-lg bg-btc-gray border border-btc-border/50 text-btc-text hover:bg-btc-border transition-colors text-xs font-medium"
+              className="px-6 py-2.5 rounded-xl bg-black/5 border border-black/5 text-btc-dark hover:bg-black/10 transition-colors text-sm font-bold mt-2"
             >
               Try Again
             </button>
@@ -149,18 +150,18 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
               <img
                 src={capturedImage}
                 alt="Analyzing"
-                className="w-40 h-40 rounded-xl object-cover border border-btc-orange/50 animate-pulse"
+                className="w-40 h-40 rounded-3xl object-cover ring-4 ring-btc-orange/50 animate-pulse shadow-2xl shadow-btc-orange/20"
               />
             )}
-            <div className="flex items-center gap-3">
+            <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-10 flex flex-col gap-3 rounded-2xl">
               <motion.div
-                className="w-5 h-5 border-2 border-btc-orange border-t-transparent rounded-full"
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="w-16 h-16 border-4 border-btc-orange border-t-transparent rounded-full drop-shadow-md"
               />
-              <span className="text-btc-orange font-medium">
-                AI analyzing your smile...
-              </span>
+              <p className="text-btc-dark font-black tracking-widest uppercase text-sm drop-shadow-md">
+                Analyzing Smile...
+              </p>
             </div>
           </motion.div>
         )}
@@ -181,46 +182,61 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
                   autoPlay
                   playsInline
                   muted
-                  className="w-64 h-48 rounded-xl object-cover border border-btc-orange/50"
+                  className="w-64 h-64 md:w-72 md:h-72 rounded-3xl object-cover ring-4 ring-btc-orange/30 shadow-2xl"
                 />
                 <button
                   onClick={captureAndAnalyze}
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-btc-orange hover:bg-btc-orange/80 transition-colors flex items-center justify-center shadow-md shadow-btc-orange/20"
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-tr from-btc-orange to-btc-amber hover:opacity-90 transition-all flex items-center justify-center shadow-lg shadow-btc-orange/40 hover:scale-105 active:scale-95 border-2 border-white/20"
                 >
-                  <div className="w-8 h-8 rounded-full border-2 border-white" />
+                  <div className="w-10 h-10 rounded-full border-[3px] border-white/90" />
                 </button>
               </div>
             ) : (
-              <div className="w-64 h-48 rounded-xl border border-dashed border-btc-border/50 bg-btc-gray/30 flex flex-col items-center justify-center gap-2">
-                <span className="text-3xl">😊</span>
-                <span className="text-btc-muted text-xs">
-                  Take a selfie or upload
-                </span>
+              <div className="text-center py-10 px-4">
+                <div className="w-20 h-20 mx-auto bg-btc-orange/10 rounded-full flex items-center justify-center mb-5 shadow-inner border border-btc-orange/20">
+                  <span className="text-4xl drop-shadow-md">👀</span>
+                </div>
+                <h3 className="text-xl font-black text-btc-dark mb-2 tracking-tight">Show us your best smile!</h3>
+                <p className="text-btc-dark/70 text-sm max-w-[280px] mx-auto leading-relaxed font-bold mb-6">
+                  Take a selfie or upload an image to see your smile score.
+                </p>
               </div>
             )}
 
-            <div className="flex gap-2">
-              {!isStreaming ? (
-                <button
-                  onClick={startCamera}
-                  className="px-5 py-2 rounded-lg bg-btc-orange text-btc-dark font-semibold hover:bg-btc-orange/90 transition-colors text-xs"
-                >
-                  📷 Open Camera
-                </button>
+            <div className="flex gap-3 z-10 w-full justify-center mt-2">
+              {isStreaming ? (
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={captureAndAnalyze}
+                    disabled={isAnalyzing}
+                    className="bg-white text-btc-dark font-black px-8 py-3.5 rounded-full hover:bg-black/5 hover:text-btc-orange transition-all shadow-lg active:scale-95 disabled:opacity-50 border border-black/5"
+                  >
+                    📸 Capture
+                  </button>
+                  <button
+                    onClick={stopCamera}
+                    disabled={isAnalyzing}
+                    className="bg-black/5 text-btc-muted font-bold px-8 py-3.5 rounded-full hover:bg-black/10 transition-all active:scale-95 disabled:opacity-50 border border-black/5"
+                  >
+                    Cancel
+                  </button>
+                </div>
               ) : (
-                <button
-                  onClick={stopCamera}
-                  className="px-5 py-2 rounded-lg bg-btc-gray border border-btc-border/50 text-btc-text hover:bg-btc-border transition-colors text-xs font-medium"
-                >
-                  Cancel
-                </button>
+                <>
+                  <button
+                    onClick={startCamera}
+                    className="flex-1 max-w-[160px] py-3 rounded-[16px] bg-gradient-to-r from-btc-orange to-[#FF7A00] text-white font-black hover:brightness-110 transition-all shadow-lg shadow-btc-orange/20 text-sm active:scale-95"
+                  >
+                    📸 Start Camera
+                  </button>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 max-w-[160px] py-3 rounded-[16px] bg-black/5 border border-black/5 text-btc-dark hover:bg-black/10 transition-colors text-sm font-black active:scale-95 shadow-sm"
+                  >
+                    📁 Upload Image
+                  </button>
+                </>
               )}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-5 py-2 rounded-lg bg-btc-gray border border-btc-border/50 text-btc-text hover:bg-btc-border transition-colors text-xs font-medium"
-              >
-                📁 Upload
-              </button>
               <input
                 ref={fileInputRef}
                 type="file"

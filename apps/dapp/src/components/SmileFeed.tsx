@@ -52,20 +52,19 @@ export function SmileFeed() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-btc-text flex items-center gap-2">
-          <span className="text-xl">📸</span> Smile Feed
+      <div className="flex items-center justify-between pb-2">
+        <h2 className="text-xl font-black text-btc-dark flex items-center gap-2 drop-shadow-sm">
+          <span className="text-2xl drop-shadow-md">📸</span> Live Feed
         </h2>
         <button
           onClick={() => {
             setLoading(true);
             fetchFeed();
           }}
-          className="text-btc-muted hover:text-btc-orange text-xs transition-colors flex items-center gap-1"
+          className="text-btc-dark/70 hover:text-btc-orange font-bold text-xs transition-colors flex items-center gap-1"
         >
           <svg
-            className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`}
+            className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -73,11 +72,11 @@ export function SmileFeed() {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.5}
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
             />
           </svg>
-          Refresh
+          Refresh Feed
         </button>
       </div>
 
@@ -95,15 +94,21 @@ export function SmileFeed() {
       {/* Empty state */}
       {!loading && entries.length === 0 && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-12 rounded-2xl bg-btc-card/60 border border-btc-border/30 border-dashed"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-16 rounded-3xl glass-panel border-dashed border-2 border-btc-border/60"
         >
-          <p className="text-4xl mb-3">😊</p>
-          <p className="text-btc-muted text-sm font-medium">
+          <motion.p
+            animate={{ rotate: [-5, 5, -5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-6xl mb-4"
+          >
+            😊
+          </motion.p>
+          <p className="text-btc-dark text-base font-black">
             No smiles in the feed yet
           </p>
-          <p className="text-btc-muted/60 text-xs mt-1">
+          <p className="text-btc-dark/70 text-sm mt-1 font-bold">
             Score 75+ and claim a reward to show up here!
           </p>
         </motion.div>
@@ -119,9 +124,9 @@ export function SmileFeed() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.03, duration: 0.2 }}
               onClick={() => setSelectedEntry(entry)}
-              className={`group relative cursor-pointer rounded-xl overflow-hidden border ${scoreBorder(
+              className={`group relative cursor-pointer rounded-2xl overflow-hidden glass-panel border-2 ${scoreBorder(
                 entry.score
-              )} bg-btc-card/80 hover:border-btc-orange/60 transition-all hover:shadow-lg hover:shadow-btc-orange/10`}
+              )} hover:border-btc-orange/80 transition-all hover:shadow-xl hover:shadow-btc-orange/20`}
             >
               {/* Image */}
               <div className="aspect-square overflow-hidden">
@@ -136,7 +141,7 @@ export function SmileFeed() {
               {/* Overlay with score badge */}
               <div className="absolute top-2 right-2">
                 <span
-                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-btc-dark/80 backdrop-blur-sm border border-btc-border/40 ${scoreColor(
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black bg-white/60 backdrop-blur-md border border-black/5 shadow-lg ${scoreColor(
                     entry.score
                   )}`}
                 >
@@ -145,17 +150,17 @@ export function SmileFeed() {
               </div>
 
               {/* Bottom info */}
-              <div className="p-2.5 space-y-1">
+              <div className="p-3 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <p className="text-btc-text text-[11px] font-mono truncate">
+                  <p className="text-btc-dark font-black text-[11px] font-mono truncate">
                     {truncateAddr(entry.evmAddress)}
                   </p>
-                  <p className="text-btc-muted text-[10px] flex-shrink-0 ml-1">
+                  <p className="text-btc-dark/70 font-bold text-[10px] flex-shrink-0 ml-1">
                     {timeAgo(entry.createdAt)}
                   </p>
                 </div>
                 {entry.message && (
-                  <p className="text-btc-muted text-[10px] truncate italic">
+                  <p className="text-btc-dark/80 text-[10px] truncate italic font-bold">
                     "{entry.message}"
                   </p>
                 )}
@@ -176,17 +181,17 @@ export function SmileFeed() {
             onClick={() => setSelectedEntry(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md rounded-2xl bg-btc-card border border-btc-border/60 overflow-hidden shadow-2xl"
+              className="relative w-full max-w-md rounded-[32px] glass-panel border border-black/5 overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close */}
               <button
                 onClick={() => setSelectedEntry(null)}
-                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-btc-dark/80 backdrop-blur-sm border border-btc-border/40 flex items-center justify-center text-btc-muted hover:text-btc-text transition-colors"
+                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-black/10 shadow-sm flex items-center justify-center text-btc-dark hover:text-btc-orange transition-colors"
               >
                 ✕
               </button>
@@ -201,32 +206,32 @@ export function SmileFeed() {
               </div>
 
               {/* Info */}
-              <div className="p-5 space-y-3">
+              <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-btc-text text-sm font-mono">
+                    <p className="text-btc-dark text-base font-mono font-black">
                       {truncateAddr(selectedEntry.evmAddress)}
                     </p>
-                    <p className="text-btc-muted text-xs">
+                    <p className="text-btc-muted text-[11px] font-medium mt-0.5 uppercase tracking-wide">
                       {timeAgo(selectedEntry.createdAt)}
                     </p>
                   </div>
                   <div className="text-right">
                     <p
-                      className={`text-3xl font-bold ${scoreColor(
+                      className={`text-3xl font-black ${scoreColor(
                         selectedEntry.score
                       )}`}
                     >
                       {selectedEntry.score}
                     </p>
-                    <p className="text-btc-muted text-[10px] uppercase tracking-wider">
+                    <p className="text-btc-dark/70 font-bold text-[10px] uppercase tracking-wider">
                       Score
                     </p>
                   </div>
                 </div>
 
                 {selectedEntry.message && (
-                  <p className="text-btc-text/80 text-sm italic border-l-2 border-btc-orange/30 pl-3">
+                  <p className="text-btc-dark font-medium text-sm italic border-l-2 border-btc-orange/50 pl-3">
                     "{selectedEntry.message}"
                   </p>
                 )}
@@ -239,7 +244,7 @@ export function SmileFeed() {
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-btc-orange hover:text-btc-orange/80 text-xs transition-colors"
+                  className="flex items-center gap-2 text-btc-orange hover:text-btc-amber font-bold text-xs transition-colors mt-2"
                 >
                   <svg
                     className="w-3.5 h-3.5"

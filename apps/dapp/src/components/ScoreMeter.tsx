@@ -44,7 +44,7 @@ export function ScoreMeter({ score, isAnimating = true }: ScoreMeterProps) {
             cy="100"
             r={radius}
             fill="none"
-            stroke="#2A2A4A"
+            stroke="rgba(33, 32, 28, 0.1)"
             strokeWidth="12"
           />
           {/* Progress circle */}
@@ -82,11 +82,10 @@ export function ScoreMeter({ score, isAnimating = true }: ScoreMeterProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
-        className={`px-4 py-2 rounded-full text-sm font-semibold ${
-          isPassing
+        className={`px-4 py-2 rounded-full text-sm font-semibold ${isPassing
             ? "bg-btc-success/20 text-btc-success border border-btc-success/30"
             : "bg-btc-danger/20 text-btc-danger border border-btc-danger/30"
-        }`}
+          }`}
       >
         {isPassing ? "Eligible for Reward!" : "Keep Smiling! Need 75+"}
       </motion.div>

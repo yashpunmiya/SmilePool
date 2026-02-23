@@ -3,37 +3,49 @@
 
 :root {
   --btc-orange: #F7931A;
-  --btc-amber: #FFAB40;
-  --btc-dark: #060612;
-  --btc-gray: #111127;
-  --btc-card: #0D0D22;
-  --btc-border: #1E1E3A;
-  --btc-text: #E8E8F0;
-  --btc-muted: #6E6E8A;
-  --btc-success: #00E676;
-  --btc-danger: #FF5252;
+  --btc-amber: #FFCA28;
+  --btc-dark: #21201C;
+  /* Charcoal for text/buttons */
+  --btc-gray: #FFFFFF;
+  /* White panels */
+  --btc-card: rgba(255, 255, 255, 0.7);
+  /* Glass */
+  --btc-border: rgba(33, 32, 28, 0.08);
+  /* Soft dark border */
+  --btc-text: #21201C;
+  /* Charcoal text */
+  --btc-muted: #8A8882;
+  /* Muted grey/brown */
+  --btc-success: #10B981;
+  --btc-danger: #EF4444;
+  --bg-color: #F5F4F0;
+  /* Warm beige background */
 }
 
 @theme {
   --color-btc-orange: #F7931A;
-  --color-btc-amber: #FFAB40;
-  --color-btc-dark: #060612;
-  --color-btc-gray: #111127;
-  --color-btc-card: #0D0D22;
-  --color-btc-border: #1E1E3A;
-  --color-btc-text: #E8E8F0;
-  --color-btc-muted: #6E6E8A;
-  --color-btc-success: #00E676;
-  --color-btc-danger: #FF5252;
+  --color-btc-amber: #FFCA28;
+  --color-btc-dark: #21201C;
+  --color-btc-gray: #FFFFFF;
+  --color-btc-card: rgba(255, 255, 255, 0.7);
+  --color-btc-border: rgba(33, 32, 28, 0.08);
+  --color-btc-text: #21201C;
+  --color-btc-muted: #8A8882;
+  --color-btc-success: #10B981;
+  --color-btc-danger: #EF4444;
+  --color-bg-color: #F5F4F0;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  background-color: #060612;
-  color: #E8E8F0;
+  background-color: var(--bg-color);
+  color: var(--btc-text);
 }
 
 * {
@@ -47,6 +59,7 @@ html, body {
 
 body {
   font-family: "Outfit", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .font-mono {
@@ -55,35 +68,76 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--btc-border);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--btc-muted);
+  background: rgba(33, 32, 28, 0.2);
+  border-radius: 4px;
 }
 
-/* Noise overlay */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(33, 32, 28, 0.4);
+}
+
+/* Cute noise overlay */
 .noise-bg::before {
   content: "";
   position: fixed;
   inset: 0;
-  opacity: 0.03;
+  opacity: 0.2;
   pointer-events: none;
   z-index: 100;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
 }
 
 /* Glow effects */
 .glow-orange {
-  box-shadow: 0 0 20px rgba(247, 147, 26, 0.15), 0 0 60px rgba(247, 147, 26, 0.05);
+  box-shadow: 0 0 30px rgba(247, 147, 26, 0.15);
 }
 
 .glow-success {
-  box-shadow: 0 0 20px rgba(0, 230, 118, 0.15), 0 0 60px rgba(0, 230, 118, 0.05);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+
+  50% {
+    transform: translateY(-15px) scale(1.02);
+  }
+
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* Glass panel - light mode */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(33, 32, 28, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }

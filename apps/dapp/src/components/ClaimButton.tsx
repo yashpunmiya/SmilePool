@@ -118,43 +118,43 @@ export function ClaimButton({ score, message = "", onClaimSuccess }: ClaimButton
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-btc-card/80 border border-btc-orange/20 p-5 flex flex-col items-center gap-3"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="glass-panel rounded-3xl p-6 flex flex-col items-center gap-4 relative overflow-hidden"
     >
-      <h3 className="text-base font-bold text-btc-orange">
-        🎉 You're Eligible!
+      <div className="absolute top-0 right-0 w-32 h-32 bg-btc-success/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+      <h3 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-btc-success to-btc-success/70 drop-shadow-sm z-10 flex items-center gap-2">
+        <span className="text-2xl">🎉</span> You're Eligible!
       </h3>
 
       {poolInsufficient && !alreadyClaimedToday ? (
-        <div className="bg-btc-amber/10 border border-btc-amber/20 rounded-xl p-3 w-full text-center">
-          <p className="text-btc-amber text-xs font-medium">Pool is empty — no rewards yet</p>
-          <p className="text-btc-muted text-[10px] mt-1">
+        <div className="bg-btc-amber/10 border border-btc-amber/20 rounded-2xl p-4 w-full text-center z-10">
+          <p className="text-btc-amber text-sm font-bold">Pool is empty — no rewards yet</p>
+          <p className="text-btc-muted/80 text-[11px] font-medium mt-1">
             Switch to "Fund" tab and donate SMILE Rune tokens to enable rewards.
           </p>
         </div>
       ) : alreadyClaimedToday ? (
-        <div className="bg-btc-muted/10 border border-btc-border/30 rounded-xl p-3 w-full text-center">
-          <p className="text-btc-muted text-xs font-medium">Already claimed today</p>
-          <p className="text-btc-muted text-[10px] mt-1">Each address can claim once per day. Come back tomorrow!</p>
+        <div className="bg-black/5 border border-black/10 rounded-2xl p-4 w-full text-center z-10">
+          <p className="text-btc-muted text-sm font-bold">Already claimed today</p>
+          <p className="text-btc-muted/80 text-[11px] font-medium mt-1">Each address can claim once per day. Come back tomorrow!</p>
         </div>
       ) : (
-        <p className="text-btc-muted text-xs text-center">
-          Score <span className="text-btc-success font-bold">{score}</span>/100 — Claim{" "}
-          <span className="text-btc-orange font-bold">
-            {poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."} SMILE
-          </span>
-        </p>
+        <div className="z-10 text-center">
+          <p className="text-btc-text text-sm font-medium">
+            Score <span className="text-btc-success font-black">{score}</span> / 100
+          </p>
+          <p className="text-btc-dark/70 mt-1 text-xs font-bold">Claim <span className="text-btc-orange font-black text-sm tracking-wide">{poolData ? Number(poolData.rewardAmountFormatted).toFixed(2) : "..."} SMILE</span></p>
+        </div>
       )}
 
       <button
         onClick={handleClaim}
         disabled={!canClaim}
-        className={`w-full py-2.5 px-6 rounded-xl font-bold text-btc-dark transition-all text-sm ${
-          canClaim
-            ? "bg-btc-orange hover:bg-btc-orange/90 shadow-md shadow-btc-orange/20"
-            : "bg-btc-muted/20 text-btc-muted cursor-not-allowed"
-        }`}
+        className={`w-full py-3.5 px-6 rounded-2xl font-black transition-all duration-300 transform active:scale-95 text-base z-10 flex items-center justify-center gap-2 ${canClaim
+          ? "bg-gradient-to-r from-btc-orange to-[#FF7A00] text-white hover:brightness-110 shadow-xl shadow-btc-orange/30"
+          : "bg-black/5 text-btc-muted/60 cursor-not-allowed border border-black/5"
+          }`}
       >
         {isClaimPending ? (
           <span className="flex items-center justify-center gap-2">
@@ -178,20 +178,20 @@ export function ClaimButton({ score, message = "", onClaimSuccess }: ClaimButton
 
       {lastTx && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="w-full bg-btc-success/10 border border-btc-success/20 rounded-xl p-4 text-center"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full bg-btc-success/10 border border-btc-success/30 rounded-2xl p-4 text-center z-10"
         >
-          <p className="text-btc-success text-sm font-medium mb-1">
-            Transaction Confirmed! 🎉
+          <p className="text-btc-success text-sm font-bold mb-1.5 flex items-center justify-center gap-1">
+            <span>🎉</span> Transaction Confirmed!
           </p>
           <a
             href={lastTx.explorerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-btc-orange underline text-xs break-all hover:text-btc-orange/80"
+            className="text-btc-orange font-medium text-xs break-all hover:text-btc-dark transition-colors underline decoration-btc-orange/30 underline-offset-2"
           >
-            View on Block Explorer →
+            View on Explorer →
           </a>
         </motion.div>
       )}

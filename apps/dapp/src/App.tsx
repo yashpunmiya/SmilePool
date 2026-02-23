@@ -50,42 +50,52 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-btc-dark text-btc-text noise-bg">
-      {/* Ambient background */}
+    <div className="min-h-screen font-sans bg-bg-color text-btc-text noise-bg overflow-x-hidden selection:bg-btc-orange/20">
+      {/* Vibrant Ambient background blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-40%] left-[-15%] w-[70%] h-[70%] bg-btc-orange/[0.04] rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-5%] w-[50%] h-[50%] bg-purple-500/[0.03] rounded-full blur-[100px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-btc-orange/30 rounded-full blur-[140px] animate-float" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[60%] bg-btc-amber/30 rounded-full blur-[160px] animate-pulse-slow" />
+        <div className="absolute top-[20%] left-[20%] w-[50%] h-[50%] bg-[#FFD740]/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 border-b border-btc-border/40 bg-btc-dark/80 backdrop-blur-xl sticky top-0">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <img src="/smile.svg" alt="SmilePool" className="w-9 h-9" />
+      <header className="fixed top-4 left-0 right-0 z-50 flex justify-center w-full pointer-events-none px-4">
+        <div className="pointer-events-auto bg-white/80 backdrop-blur-3xl border border-black/10 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-full px-5 py-2.5 flex items-center justify-between w-full max-w-5xl transition-all">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-3 cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-btc-orange to-[#FF7A00] p-2 shadow-lg shadow-btc-orange/30 flex items-center justify-center">
+              <img src="/smile.svg" alt="SmilePool" className="w-[85%] h-[85%] object-contain filter drop-shadow-sm brightness-0 invert" />
+            </div>
             <div>
-              <h1 className="text-lg font-bold text-btc-text tracking-tight leading-tight">
+              <h1 className="text-xl font-black text-btc-dark tracking-tight leading-none">
                 Smile<span className="text-btc-orange">Pool</span>
               </h1>
-              <p className="text-[10px] text-btc-muted font-medium tracking-widest uppercase">Smile-to-Earn on Bitcoin</p>
+              <p className="text-[10px] text-btc-dark/80 font-black tracking-[0.2em] uppercase mt-0.5">Built on Midl</p>
             </div>
-          </div>
+          </motion.div>
           <WalletConnect />
         </div>
       </header>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 py-8 space-y-8">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 pt-24 pb-4 space-y-4">
         {/* Hero */}
         <motion.section
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-3 py-4"
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
+          className="text-center space-y-2 py-0"
         >
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-            Smile & <span className="text-btc-orange">Earn SMILE</span>
+          <div className="inline-block px-4 py-1.5 rounded-full bg-btc-orange/10 border border-btc-orange/20 text-btc-orange text-xs font-black tracking-wide uppercase mb-0.5">
+            AI Smile-to-Earn
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight text-btc-dark drop-shadow-sm pb-1">
+            Smile & <span className="text-transparent bg-clip-text bg-gradient-to-r from-btc-orange to-[#FF7A00]">Earn SMILE</span>
           </h2>
-          <p className="text-btc-muted text-sm max-w-md mx-auto leading-relaxed">
-            AI scores your smile. Score 75+ to claim SMILE Rune tokens
-            from the community pool. Built on Midl Protocol.
+          <p className="text-btc-dark text-sm font-bold max-w-lg mx-auto leading-relaxed">
+            AI scores your smile. Score 75+ to claim <span className="text-btc-orange font-black">SMILE</span> Runes
+            from the community pool. Spread positivity.
           </p>
         </motion.section>
 
@@ -94,27 +104,31 @@ export default function App() {
 
         {/* Tab selector */}
         {isConnected && (
-          <div className="flex items-center justify-center">
-            <div className="flex bg-btc-gray/80 rounded-xl p-1 border border-btc-border/50">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center pt-0"
+          >
+            <div className="flex bg-white/60 backdrop-blur-md rounded-full p-1.5 border border-black/10 shadow-inner">
               {([
-                { key: "smile" as Tab, label: "😊 Smile", icon: "" },
-                { key: "donate" as Tab, label: "💰 Fund", icon: "" },
-                { key: "feed" as Tab, label: "🏆 Feed", icon: "" },
+                { key: "smile" as Tab, label: "Capture", emoji: "📸" },
+                { key: "donate" as Tab, label: "Fund Pool", emoji: "💖" },
+                { key: "feed" as Tab, label: "Live Feed", emoji: "🌟" },
               ]).map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
-                  className={`relative px-5 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    activeTab === t.key
-                      ? "bg-btc-orange text-btc-dark shadow-md"
-                      : "text-btc-muted hover:text-btc-text"
-                  }`}
+                  className={`relative px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ease-out flex items-center gap-2 ${activeTab === t.key
+                    ? "bg-gradient-to-r from-btc-orange to-[#FF7A00] text-white shadow-lg shadow-btc-orange/30 scale-100"
+                    : "text-btc-muted hover:text-btc-dark hover:bg-black/5 scale-95"
+                    }`}
                 >
+                  <span className={activeTab === t.key ? "opacity-100" : "opacity-70"}>{t.emoji}</span>
                   {t.label}
                 </button>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Main content area */}
@@ -127,9 +141,9 @@ export default function App() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ duration: 0.15 }}
-                className="space-y-5"
+                className="space-y-4"
               >
-                <div className="grid md:grid-cols-2 gap-5">
+                <div className="grid md:grid-cols-2 gap-4">
                   {/* Camera */}
                   <SmileCamera onScoreReady={setScore} onPhotoReady={handlePhotoReady} />
 
@@ -139,22 +153,23 @@ export default function App() {
                       <>
                         {/* Message input */}
                         <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-4"
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          className="rounded-[32px] glass-panel p-6 relative overflow-hidden"
                         >
-                          <label className="text-btc-muted text-[10px] uppercase tracking-widest font-semibold mb-2 block">
-                            Add a message (optional)
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-btc-orange/10 rounded-full blur-2xl -mr-10 -mt-10" />
+                          <label className="text-btc-dark text-xs uppercase tracking-widest font-black mb-3 block flex items-center gap-2">
+                            <span>✍️</span> Drop a message
                           </label>
                           <input
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value.slice(0, 140))}
-                            placeholder="Spreading positivity on Bitcoin! ☀️"
-                            className="w-full bg-btc-gray/60 border border-btc-border/40 rounded-lg px-3 py-2 text-sm text-btc-text placeholder:text-btc-muted/40 focus:outline-none focus:border-btc-orange/40 transition-colors"
+                            placeholder="Spreading vibes! ✨"
+                            className="w-full bg-white/80 border border-black/10 rounded-2xl px-4 py-3.5 text-sm text-btc-dark font-bold placeholder:text-btc-dark/50 focus:outline-none focus:border-btc-orange focus:ring-2 focus:ring-btc-orange/20 transition-all shadow-inner"
                             maxLength={140}
                           />
-                          <p className="text-btc-muted/40 text-[10px] mt-1 text-right font-mono">
+                          <p className="text-btc-dark/50 text-xs mt-2 text-right font-mono font-bold">
                             {message.length}/140
                           </p>
                         </motion.div>
@@ -163,21 +178,27 @@ export default function App() {
                     )}
                     {score !== null && score < 75 && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-6 text-center"
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        className="rounded-3xl bg-btc-danger/5 border border-btc-danger/20 p-6 text-center shadow-inner"
                       >
-                        <p className="text-btc-danger text-sm font-medium">
-                          Score {score}/100 — Need 75+ to claim
+                        <p className="text-btc-danger text-base font-bold mb-1">
+                          Score {score}/100
                         </p>
-                        <p className="text-btc-muted text-xs mt-1">Try again with a bigger smile!</p>
+                        <p className="text-btc-danger/70 text-sm font-medium">Need 75+ to claim. Give us a bigger smile!</p>
                       </motion.div>
                     )}
                     {score === null && (
-                      <div className="rounded-2xl bg-btc-card/60 border border-btc-border/30 border-dashed p-8 text-center">
-                        <p className="text-btc-muted text-3xl mb-3">📸</p>
-                        <p className="text-btc-muted text-sm">
-                          Take a selfie or upload a photo to get started
+                      <div className="rounded-[32px] glass-panel border-dashed border-2 border-black/10 p-6 text-center flex flex-col items-center justify-center min-h-[200px]">
+                        <motion.p
+                          animate={{ rotate: [-5, 5, -5] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                          className="text-6xl mb-3 opacity-90"
+                        >
+                          🥺
+                        </motion.p>
+                        <p className="text-btc-dark font-black text-sm max-w-[200px]">
+                          Waiting for your beautiful smile...
                         </p>
                       </div>
                     )}
@@ -213,14 +234,14 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12 space-y-5"
+            className="text-center py-8 space-y-4"
           >
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-btc-gray border border-btc-border flex items-center justify-center text-3xl">
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-white border border-black/5 shadow-md flex items-center justify-center text-3xl">
               🔗
             </div>
             <div>
-              <p className="text-btc-text font-semibold">Connect your wallet</p>
-              <p className="text-btc-muted text-sm mt-1">
+              <p className="text-btc-dark font-black text-lg">Connect your wallet</p>
+              <p className="text-btc-dark/80 font-medium text-sm mt-1">
                 Use Xverse wallet to start smiling & earning
               </p>
             </div>
@@ -234,18 +255,17 @@ export default function App() {
         {activeTab !== "feed" && <Leaderboard />}
 
         {/* Footer */}
-        <footer className="text-center py-6 border-t border-btc-border/30">
-          <p className="text-btc-muted text-xs">
+        <footer className="text-center pt-6 pb-6 border-t border-black/5 mt-6">
+          <p className="text-btc-dark/80 text-sm font-bold">
             Built for{" "}
             <a
               href="https://midl.xyz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-btc-orange hover:underline font-medium"
+              className="text-btc-orange hover:text-[#FF7A00] font-black transition-colors inline-flex items-center gap-1"
             >
-              Midl VibeHack
+              Midl ✧ VibeHack
             </a>
-            {" "}· SmilePool — AI Smile-to-Earn on Bitcoin
           </p>
         </footer>
       </main>

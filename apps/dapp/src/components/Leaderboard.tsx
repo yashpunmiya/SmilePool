@@ -119,34 +119,34 @@ export function Leaderboard() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: 0.3 }}
-      className="rounded-2xl bg-btc-card/80 border border-btc-border/50 p-5"
+      className="glass-panel rounded-3xl p-6 flex flex-col gap-4 relative overflow-hidden shadow-2xl"
     >
+      <div className="absolute top-0 right-0 w-32 h-32 bg-btc-orange/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+
       {/* Tab header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-bold text-btc-text flex items-center gap-2">
-          <span className="text-xl">🏆</span> Leaderboard
+      <div className="flex items-center justify-between mb-2 z-10 w-full">
+        <h2 className="text-xl font-black text-btc-dark flex items-center gap-2 drop-shadow-sm">
+          <span className="text-2xl drop-shadow-md">🏆</span> Leaderboard
         </h2>
-        <div className="flex gap-0.5 bg-btc-gray/80 rounded-lg p-0.5">
+        <div className="flex gap-1 bg-black/5 backdrop-blur-md rounded-xl p-1 shadow-inner border border-black/5">
           <button
             onClick={() => setTab("feed")}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-              tab === "feed"
-                ? "bg-btc-orange text-btc-dark"
-                : "text-btc-muted hover:text-btc-text"
-            }`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${tab === "feed"
+              ? "bg-gradient-to-r from-btc-orange to-[#FF7A00] text-white shadow-md"
+              : "text-btc-dark/60 hover:text-btc-dark"
+              }`}
           >
             Recent Feed
           </button>
           <button
             onClick={() => setTab("top")}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-              tab === "top"
-                ? "bg-btc-orange text-btc-dark"
-                : "text-btc-muted hover:text-btc-text"
-            }`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${tab === "top"
+              ? "bg-gradient-to-r from-btc-orange to-[#FF7A00] text-white shadow-md"
+              : "text-btc-dark/60 hover:text-btc-dark"
+              }`}
           >
             Top Smilers
           </button>
@@ -166,35 +166,36 @@ export function Leaderboard() {
         entries.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar z-10 w-full relative">
             {entries.map((entry, i) => (
               <motion.div
                 key={`${entry.smiler}-${entry.timestamp}-${i}`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ delay: i * 0.03 }}
-                className="p-3 rounded-xl border bg-btc-gray/50 border-btc-border/50"
+                whileHover={{ scale: 1.02 }}
+                className="p-4 rounded-2xl bg-white/60 border border-black/5 hover:border-btc-orange/30 hover:bg-white transition-colors shadow-sm"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   {/* Photo avatar or rank */}
                   {photos[entry.smiler.toLowerCase()] ? (
                     <img
                       src={photos[entry.smiler.toLowerCase()]}
                       alt="smile"
-                      className="w-9 h-9 rounded-full object-cover border-2 border-btc-orange/40 flex-shrink-0"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-btc-orange/50 shadow-md flex-shrink-0"
                     />
                   ) : (
-                    <span className="text-lg w-9 text-center font-bold flex-shrink-0">
+                    <span className="text-xl w-12 text-center font-bold drop-shadow-md flex-shrink-0">
                       {getMedal(i)}
                     </span>
                   )}
 
                   {/* User + message */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-btc-text text-sm font-mono truncate">
+                    <p className="text-btc-dark text-sm font-mono font-bold truncate">
                       {truncateAddr(entry.smiler)}
                     </p>
-                    <p className="text-btc-muted text-xs">
+                    <p className="text-btc-dark/70 text-[11px] font-bold mt-0.5">
                       {formatTime(entry.timestamp)}
                     </p>
                   </div>
@@ -202,13 +203,12 @@ export function Leaderboard() {
                   {/* Score + Reward */}
                   <div className="text-right flex-shrink-0">
                     <p
-                      className={`text-lg font-bold ${
-                        Number(entry.score) >= 90
-                          ? "text-btc-success"
-                          : Number(entry.score) >= 75
-                          ? "text-yellow-400"
+                      className={`text-2xl font-black drop-shadow-sm ${Number(entry.score) >= 90
+                        ? "text-btc-success"
+                        : Number(entry.score) >= 75
+                          ? "text-btc-amber"
                           : "text-btc-muted"
-                      }`}
+                        }`}
                     >
                       {entry.score.toString()}
                     </p>
@@ -220,7 +220,7 @@ export function Leaderboard() {
 
                 {/* Message */}
                 {entry.message && (
-                  <p className="mt-2 ml-11 text-sm text-btc-text/80 italic border-l-2 border-btc-orange/30 pl-3">
+                  <p className="mt-2 ml-14 text-sm text-btc-dark font-medium italic border-l-2 border-btc-orange/50 pl-3">
                     "{entry.message}"
                   </p>
                 )}
@@ -233,16 +233,17 @@ export function Leaderboard() {
         topSmilers.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="space-y-2 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar z-10 w-full relative">
             {topSmilers.map((smiler, i) => (
               <motion.div
                 key={smiler.address}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-center gap-3 p-3 rounded-xl border bg-btc-gray/50 border-btc-border/50"
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 border border-black/5 hover:border-btc-orange/30 hover:bg-white transition-colors shadow-sm"
               >
-                <span className="text-lg w-8 text-center font-bold">
+                <span className="text-2xl w-8 text-center font-bold drop-shadow-sm">
                   {getMedal(i)}
                 </span>
 
@@ -251,24 +252,24 @@ export function Leaderboard() {
                   <img
                     src={photos[smiler.address.toLowerCase()]}
                     alt="smile"
-                    className="w-9 h-9 rounded-full object-cover border-2 border-btc-orange/40 flex-shrink-0"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-btc-orange/50 shadow-md flex-shrink-0"
                   />
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-btc-text text-sm font-mono truncate">
+                  <p className="text-btc-dark text-sm font-mono font-bold truncate">
                     {truncateAddr(smiler.address)}
                   </p>
-                  <p className="text-btc-muted text-xs">
-                    {smiler.totalSmiles.toString()} smiles · Best: {smiler.bestScore.toString()}
+                  <p className="text-btc-dark/70 text-[11px] font-bold mt-0.5">
+                    {smiler.totalSmiles.toString()} smiles · Best: <span className="text-btc-success">{smiler.bestScore.toString()}</span>
                   </p>
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <p className="text-btc-orange text-lg font-bold">
+                  <p className="text-btc-orange text-lg font-black">
                     {Number(formatUnits(smiler.totalEarned, 18)).toFixed(2)}
                   </p>
-                  <p className="text-btc-muted text-xs">SMILE earned</p>
+                  <p className="text-btc-dark/60 font-bold text-xs">SMILE earned</p>
                 </div>
               </motion.div>
             ))}

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { supabase } from "../lib/supabase";
 
 /**
- * Fetches smile photo URLs for a batch of EVM addresses from Firestore.
+ * Fetches smile avatar URLs for a batch of EVM addresses from Supabase.
  * Returns a map of lowercased address → photoUrl.
  */
 export function useSmilePhotos(addresses: string[]): Record<string, string> {
@@ -11,29 +10,19 @@ export function useSmilePhotos(addresses: string[]): Record<string, string> {
 
   useEffect(() => {
     if (!addresses.length) return;
-
     const lower = addresses.map((a) => a.toLowerCase());
 
-    // Firestore `in` supports up to 30 items; chunk if needed
-    const chunks: string[][] = [];
-    for (let i = 0; i < lower.length; i += 30) {
-      chunks.push(lower.slice(i, i + 30));
-    }
-
-    Promise.all(
-      chunks.map((chunk) =>
-        getDocs(query(collection(db, "smiles"), where("evmAddress", "in", chunk)))
-      )
-    ).then((results) => {
-      const map: Record<string, string> = {};
-      for (const snap of results) {
-        snap.forEach((doc) => {
-          const d = doc.data();
-          if (d.photoUrl) map[d.evmAddress] = d.photoUrl;
-        });
-      }
-      setPhotos(map);
-    });
+    supabase
+      .from("smiles")
+      .select("evm_address, photo_url")
+      .in("evm_address", lower)
+      .then(({ data }) => {
+        const map: Record<string, string> = {};
+        for (const row of data ?? []) {
+          if (row.photo_url) map[row.evm_address] = row.photo_url;
+        }
+        setPhotos(map);
+      });
   }, [addresses.join(",")]);
 
   return photos;

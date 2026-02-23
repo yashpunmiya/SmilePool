@@ -36,9 +36,10 @@ function decodeClaimError(err: unknown): string {
 interface ClaimButtonProps {
   score: number | null;
   message?: string;
+  onClaimSuccess?: (txHash: string, explorerUrl: string) => void;
 }
 
-export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
+export function ClaimButton({ score, message = "", onClaimSuccess }: ClaimButtonProps) {
   const { claimReward, isClaimPending, lastTx, error } = useSmilePool();
   const evmAddress = useEVMAddress();
   const { data: poolData, refetch } = usePoolBalance();
@@ -96,6 +97,9 @@ export function ClaimButton({ score, message = "" }: ClaimButtonProps) {
     if (result) {
       setClaimed(true);
       refetch();
+
+      // Save to feed via parent callback
+      onClaimSuccess?.(result.txId, result.explorerUrl);
 
       confetti({
         particleCount: 150,

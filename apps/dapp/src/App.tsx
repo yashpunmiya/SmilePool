@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WalletConnect } from "./components/WalletConnect";
 import { PoolStats } from "./components/PoolStats";
@@ -6,9 +6,10 @@ import { SmileCamera } from "./components/SmileCamera";
 import { ClaimButton } from "./components/ClaimButton";
 import { DonatePanel } from "./components/DonatePanel";
 import { Leaderboard } from "./components/Leaderboard";
+import { SmileFeed } from "./components/SmileFeed";
 import { useAccounts } from "@midl/react";
 import { useEVMAddress } from "@midl/executor-react";
-import { uploadSmilePhoto } from "./lib/smileStorage";
+import { uploadSmilePhoto, saveFeedEntry } from "./lib/smileStorage";
 
 type Tab = "smile" | "donate" | "feed";
 
@@ -18,14 +19,34 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("smile");
   const { isConnected } = useAccounts();
   const evmAddress = useEVMAddress();
+  // Keep the latest captured photo for saving to the feed after a successful claim
+  const latestPhotoRef = useRef<string | null>(null);
 
   const handlePhotoReady = useCallback(
     (dataUrl: string, photoScore: number) => {
+      // Store the captured image so we can save it to the feed after claim
+      latestPhotoRef.current = dataUrl;
       if (!evmAddress) return;
-      // fire-and-forget — don't block UI
+      // fire-and-forget — update avatar
       uploadSmilePhoto(evmAddress, dataUrl, photoScore).catch(console.error);
     },
     [evmAddress]
+  );
+
+  /** Called by ClaimButton after a successful on-chain claim */
+  const handleClaimSuccess = useCallback(
+    (txHash: string, explorerUrl: string) => {
+      if (!evmAddress || !latestPhotoRef.current || score === null) return;
+      saveFeedEntry({
+        evmAddress,
+        dataUrl: latestPhotoRef.current,
+        score,
+        message,
+        txHash,
+        explorerUrl,
+      }).catch(console.error);
+    },
+    [evmAddress, score, message]
   );
 
   return (
@@ -137,7 +158,7 @@ export default function App() {
                             {message.length}/140
                           </p>
                         </motion.div>
-                        <ClaimButton score={score} message={message} />
+                        <ClaimButton score={score} message={message} onClaimSuccess={handleClaimSuccess} />
                       </>
                     )}
                     {score !== null && score < 75 && (
@@ -181,7 +202,9 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.15 }}
+                className="space-y-6"
               >
+                <SmileFeed />
                 <Leaderboard />
               </motion.div>
             )}

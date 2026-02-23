@@ -14,19 +14,36 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const { result, isAnalyzing, error, analyze, reset } = useSmileScore();
 
   const startCamera = useCallback(async () => {
+    setCameraError(null);
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError("Camera not supported. Try uploading an image instead.");
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: 640, height: 480 },
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(() => {});
         setIsStreaming(true);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Camera access denied:", err);
+      const name = (err as { name?: string })?.name;
+      if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+        setCameraError("Camera permission denied. Please allow camera access and try again.");
+      } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+        setCameraError("No camera found. Try uploading an image instead.");
+      } else if (name === "NotReadableError") {
+        setCameraError("Camera is in use by another app. Close it and try again.");
+      } else {
+        setCameraError("Could not start camera. Try uploading an image instead.");
+      }
     }
   }, []);
 
@@ -91,6 +108,7 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
   const resetAll = useCallback(() => {
     reset();
     setCapturedImage(null);
+    setCameraError(null);
     stopCamera();
   }, [reset, stopCamera]);
 
@@ -175,23 +193,24 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
             exit={{ opacity: 0 }}
             className="flex flex-col items-center gap-4 w-full"
           >
-            {isStreaming ? (
-              <div className="relative">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-64 h-64 md:w-72 md:h-72 rounded-3xl object-cover ring-4 ring-btc-orange/30 shadow-2xl"
-                />
-                <button
-                  onClick={captureAndAnalyze}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-tr from-btc-orange to-btc-amber hover:opacity-90 transition-all flex items-center justify-center shadow-lg shadow-btc-orange/40 hover:scale-105 active:scale-95 border-2 border-white/20"
-                >
-                  <div className="w-10 h-10 rounded-full border-[3px] border-white/90" />
-                </button>
-              </div>
-            ) : (
+            {/* Video is always in DOM so videoRef is valid before isStreaming is set */}
+            <div className={`relative ${isStreaming ? "block" : "hidden"}`}>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-64 h-64 md:w-72 md:h-72 rounded-3xl object-cover ring-4 ring-btc-orange/30 shadow-2xl"
+              />
+              <button
+                onClick={captureAndAnalyze}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-tr from-btc-orange to-btc-amber hover:opacity-90 transition-all flex items-center justify-center shadow-lg shadow-btc-orange/40 hover:scale-105 active:scale-95 border-2 border-white/20"
+              >
+                <div className="w-10 h-10 rounded-full border-[3px] border-white/90" />
+              </button>
+            </div>
+
+            {!isStreaming && (
               <div className="text-center py-10 px-4">
                 <div className="w-20 h-20 mx-auto bg-btc-orange/10 rounded-full flex items-center justify-center mb-5 shadow-inner border border-btc-orange/20">
                   <span className="text-4xl drop-shadow-md">👀</span>
@@ -247,8 +266,8 @@ export function SmileCamera({ onScoreReady, onPhotoReady }: SmileCameraProps) {
               />
             </div>
 
-            {error && (
-              <p className="text-btc-danger text-sm text-center">{error}</p>
+            {(error || cameraError) && (
+              <p className="text-btc-danger text-sm text-center">{cameraError ?? error}</p>
             )}
           </motion.div>
         )}
